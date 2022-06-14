@@ -15,7 +15,8 @@ public class FixedWindowRateLimiter extends RateLimiter{
         super(jedisPool);
     }
     @Override
-    public boolean tryRequest(String identity, int cost) {
+    public boolean tryRequest(String identity, int cost) throws RateLimiterError{
+        if(limits.isEmpty()) throw new RateLimiterError("Limit is empty");
 //        List<Long> buckets = new ArrayList<>();
         boolean allow = true;
         long timestamp = System.currentTimeMillis()/1000;

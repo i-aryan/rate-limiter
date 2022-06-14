@@ -33,7 +33,7 @@ public class TokenBucketRateLimiter extends RateLimiter{
             Transaction transaction = jedis.multi();
             for(Limit limit: limits) {
                 List<String> keys = Arrays.asList(RateLimiterUtility.getKey(identity, this.toString(), limit.toString()),
-                        RateLimiterUtility.getTimestampKey(identity, this.hashCode(), limit.toString()));
+                        RateLimiterUtility.getTimestampKey(identity, this.toString(), limit.toString()));
                 List<String> args = Arrays.asList(
                         Integer.toString(limit.getCapacity()),
                         Integer.toString(limit.getRefillRate()),

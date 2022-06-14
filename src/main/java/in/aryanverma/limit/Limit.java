@@ -7,15 +7,16 @@ public class Limit {
     private Integer refillRate;
     private Integer lookBackCount;
     private Duration period;
-
+    private Integer dispatchInterval;
     private String limitId;
 
-    public Limit(String limitId, Integer capacity, Duration period, Integer refillRate, Integer lookBackCount){
+    public Limit(String limitId, Integer capacity, Duration period, Integer refillRate, Integer lookBackCount, Integer dispatchInterval){
         this.limitId = limitId;
         this.capacity = capacity;
         this.period = period;
         this.refillRate = refillRate;
         this.lookBackCount = lookBackCount;
+        this.dispatchInterval = dispatchInterval;
     }
 
     public Integer getCapacity() {
@@ -50,6 +51,13 @@ public class Limit {
         this.period = period;
     }
 
+    public Integer getDispatchInterval() {
+        return dispatchInterval;
+    }
+
+    public void setDispatchInterval(Integer dispatchInterval) {
+        this.dispatchInterval = dispatchInterval;
+    }
     @Override
     public String toString() {
         return limitId;

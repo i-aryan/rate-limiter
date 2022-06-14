@@ -18,9 +18,9 @@ public abstract class RateLimiter {
     public RateLimiter(JedisPool jedisPool){
         this.jedisPool = jedisPool;
     }
-    public abstract boolean tryRequest(String identity, int cost);
+    public abstract boolean tryRequest(String identity, int cost) throws RateLimiterError;
 
-    public boolean tryRequest(String identity){
+    public boolean tryRequest(String identity) throws RateLimiterError{
         return tryRequest(identity, 1);
     }
 
@@ -31,12 +31,12 @@ public abstract class RateLimiter {
 
     public static void main(String[] args){
         JedisPool jedisPool1 = new JedisPool("localhost", 6379);
-        RateLimiter rateLimiter = new SlidingWidowRateLimiter(jedisPool1);
-        rateLimiter.addLimit(new SlidingWindowLimit("test", 5, Duration.ofSeconds(1), 5));
+        RateLimiter rateLimiter = new LeakyBucketRateLimiter(jedisPool1);
+        rateLimiter.addLimit(new LeakyBucketLimit("test", 1, 500));
 
-        ExecutorService executor = Executors.newFixedThreadPool(5);
+        ExecutorService executor = Executors.newFixedThreadPool(100);
         Random random = new Random();
-        for(int i=0; i<50; i++){
+        for(int i=0; i<100; i++){
             PretendRequest request = new PretendRequest(rateLimiter,(1 + random.nextInt(10) )*1000);
             executor.execute(request);
         }
@@ -57,7 +57,12 @@ class PretendRequest implements Runnable {
         try{
             Thread.sleep(this.sleepTime);
         }catch (InterruptedException e){}
-        rateLimiter.tryRequest("aryan");
+        try {
+            rateLimiter.tryRequest("aryan");
+        }
+        catch (RateLimiterError e){
+            System.out.println(e);
+        }
     }
 }
 

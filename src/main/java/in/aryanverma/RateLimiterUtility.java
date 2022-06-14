@@ -12,7 +12,7 @@ public class RateLimiterUtility {
     public static String getKey(String identity, String rateLimiterType, String limitId){
         return identity + ":" + rateLimiterType + ":" + limitId;
     }
-    public static String getTimestampKey(String identity, int rateLimiterType, String limitId){
+    public static String getTimestampKey(String identity, String rateLimiterType, String limitId){
         return identity + ":timestamp:" + rateLimiterType + ":" + limitId;
     }
 
