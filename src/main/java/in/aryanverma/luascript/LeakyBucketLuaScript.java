@@ -26,9 +26,9 @@ public class LeakyBucketLuaScript extends LuaScript{
             "if newDispatchTime < timestamp then " +
             "newDispatchTime = timestamp " +
             "end " +
-            "redis.call('setex', timestampKey, math.ceil(capacity*dispatchInterval/1000), newDispatchTime); " +
+            "redis.call('setex', timestampKey, math.ceil(2*capacity*dispatchInterval/1000), newDispatchTime); " +
             "redis.call('zadd', keyName, newDispatchTime, setKeyName); " +
-            "redis.call('expire', keyName, math.ceil(capacity*dispatchInterval/1000)); " +
+            "redis.call('expire', keyName, math.ceil(2*capacity*dispatchInterval/1000)); " +
             "return {1, newDispatchTime}; ";
 
     public LeakyBucketLuaScript(Jedis jedis){

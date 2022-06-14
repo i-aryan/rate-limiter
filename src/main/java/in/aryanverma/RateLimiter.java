@@ -32,7 +32,7 @@ public abstract class RateLimiter {
     public static void main(String[] args){
         JedisPool jedisPool1 = new JedisPool("localhost", 6379);
         RateLimiter rateLimiter = new LeakyBucketRateLimiter(jedisPool1);
-        rateLimiter.addLimit(new LeakyBucketLimit("test", 1, 500));
+        rateLimiter.addLimit(new LeakyBucketLimit("test", 3, 500));
 
         ExecutorService executor = Executors.newFixedThreadPool(100);
         Random random = new Random();
