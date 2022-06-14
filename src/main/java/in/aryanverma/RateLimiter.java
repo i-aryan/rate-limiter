@@ -3,7 +3,6 @@ package in.aryanverma;
 import in.aryanverma.limit.*;
 import redis.clients.jedis.*;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -18,18 +17,23 @@ public abstract class RateLimiter {
     public RateLimiter(JedisPool jedisPool){
         this.jedisPool = jedisPool;
     }
-    public abstract boolean tryRequest(String identity, int cost) throws RateLimiterError;
+    public abstract boolean tryRequest(String identity, int cost) throws RateLimiterException;
 
-    public boolean tryRequest(String identity) throws RateLimiterError{
+    public boolean tryRequest(String identity) throws RateLimiterException {
         return tryRequest(identity, 1);
     }
 
-    public RateLimiter addLimit(Limit limit) {
-        limits.add(limit);
+    public RateLimiter addLimit(Limit limit) throws RateLimiterException {
+        checkLimitType(limit);
+        synchronized (this.limits) {
+            limits.add(limit);
+        }
         return this;
     }
 
-    public static void main(String[] args){
+    protected abstract void checkLimitType(Limit limit) throws RateLimiterException;
+
+    public static void main(String[] args) throws RateLimiterException{
         JedisPool jedisPool1 = new JedisPool("localhost", 6379);
         RateLimiter rateLimiter = new LeakyBucketRateLimiter(jedisPool1);
         rateLimiter.addLimit(new LeakyBucketLimit("test", 3, 500));
@@ -60,7 +64,7 @@ class PretendRequest implements Runnable {
         try {
             rateLimiter.tryRequest("aryan");
         }
-        catch (RateLimiterError e){
+        catch (RateLimiterException e){
             System.out.println(e);
         }
     }

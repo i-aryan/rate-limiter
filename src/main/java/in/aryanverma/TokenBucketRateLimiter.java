@@ -1,6 +1,8 @@
 package in.aryanverma;
 
+import in.aryanverma.limit.FixedWindowLimit;
 import in.aryanverma.limit.Limit;
+import in.aryanverma.limit.TokenBucketLimit;
 import in.aryanverma.luascript.LuaScript;
 import in.aryanverma.luascript.TokenBucketLuaScript;
 import redis.clients.jedis.Jedis;
@@ -50,6 +52,12 @@ public class TokenBucketRateLimiter extends RateLimiter{
         }
         System.out.println(timestamp/1000 + ", "+ allow);
         return allow;
+    }
+
+    @Override
+    protected void checkLimitType(Limit limit) throws RateLimiterException{
+        if(limit instanceof TokenBucketLimit) return;
+        throw new RateLimiterException("Limit type is not TokenBucketLimit");
     }
 
     @Override

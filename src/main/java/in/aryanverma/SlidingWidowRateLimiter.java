@@ -1,6 +1,8 @@
 package in.aryanverma;
 
+import in.aryanverma.limit.FixedWindowLimit;
 import in.aryanverma.limit.Limit;
+import in.aryanverma.limit.SlidingWindowLimit;
 import in.aryanverma.luascript.LuaScript;
 import in.aryanverma.luascript.SlidingWindowLuaScript;
 import redis.clients.jedis.Jedis;
@@ -46,6 +48,11 @@ public class SlidingWidowRateLimiter extends RateLimiter{
         return  allow;
     }
 
+    @Override
+    protected void checkLimitType(Limit limit) throws RateLimiterException{
+        if(limit instanceof SlidingWindowLimit) return;
+        throw new RateLimiterException("Limit type is not SlidingWindowLimit");
+    }
     @Override
     public String toString() {
         return "slidingWindow";

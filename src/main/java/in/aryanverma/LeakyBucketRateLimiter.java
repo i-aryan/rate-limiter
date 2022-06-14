@@ -1,15 +1,13 @@
 package in.aryanverma;
 
+import in.aryanverma.limit.FixedWindowLimit;
+import in.aryanverma.limit.LeakyBucketLimit;
 import in.aryanverma.limit.Limit;
 import in.aryanverma.luascript.LeakyBucketLuaScript;
 import in.aryanverma.luascript.LuaScript;
-import in.aryanverma.luascript.TokenBucketLuaScript;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Response;
-import redis.clients.jedis.Transaction;
 
-import javax.naming.spi.ObjectFactoryBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,9 +22,9 @@ public class LeakyBucketRateLimiter extends RateLimiter{
         }
     }
     @Override
-    public boolean tryRequest(String identity, int cost) throws RateLimiterError {
-        if(limits.isEmpty()) throw new RateLimiterError("Limit is empty");
-        if(limits.size() > 1) throw new RateLimiterError("Cannot have more than 1 limit in Leaky Bucket Rate limiter");
+    public boolean tryRequest(String identity, int cost) throws RateLimiterException {
+        if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
+        if(limits.size() > 1) throw new RateLimiterException("Cannot have more than 1 limit in Leaky Bucket Rate limiter");
         long timestamp = System.currentTimeMillis();
         Object response;
         try(Jedis jedis = jedisPool.getResource()){
@@ -53,6 +51,11 @@ public class LeakyBucketRateLimiter extends RateLimiter{
 
         System.out.println(timestamp + ", true, " + System.currentTimeMillis() + ", wait:" + ((ArrayList<Long>)response).get(1));
         return true;
+    }
+    @Override
+    protected void checkLimitType(Limit limit) throws RateLimiterException{
+        if(limit instanceof LeakyBucketLimit) return;
+        throw new RateLimiterException("Limit type is not LeakyBucketLimit");
     }
 
     @Override

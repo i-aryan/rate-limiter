@@ -1,5 +1,6 @@
 package in.aryanverma;
 
+import in.aryanverma.limit.FixedWindowLimit;
 import in.aryanverma.limit.Limit;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -15,8 +16,8 @@ public class FixedWindowRateLimiter extends RateLimiter{
         super(jedisPool);
     }
     @Override
-    public boolean tryRequest(String identity, int cost) throws RateLimiterError{
-        if(limits.isEmpty()) throw new RateLimiterError("Limit is empty");
+    public boolean tryRequest(String identity, int cost) throws RateLimiterException {
+        if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
 //        List<Long> buckets = new ArrayList<>();
         boolean allow = true;
         long timestamp = System.currentTimeMillis()/1000;
@@ -40,6 +41,12 @@ public class FixedWindowRateLimiter extends RateLimiter{
         }
         //System.out.println(buckets.get(0) + ", " + buckets.get(1) + "," + allow);
         return allow;
+    }
+
+    @Override
+    protected void checkLimitType(Limit limit) throws RateLimiterException{
+        if(limit instanceof FixedWindowLimit) return;
+        throw new RateLimiterException("Limit type is not FixedWindowLimit");
     }
 
     @Override

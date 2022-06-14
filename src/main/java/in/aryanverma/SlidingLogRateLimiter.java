@@ -1,6 +1,8 @@
 package in.aryanverma;
 
+import in.aryanverma.limit.FixedWindowLimit;
 import in.aryanverma.limit.Limit;
+import in.aryanverma.limit.SlidingLogLimit;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Response;
@@ -42,6 +44,12 @@ public class SlidingLogRateLimiter extends RateLimiter{
             System.out.println(timestamp/1000 + ","+ allow);
         }
         return allow;
+    }
+
+    @Override
+    protected void checkLimitType(Limit limit) throws RateLimiterException{
+        if(limit instanceof SlidingLogLimit) return;
+        throw new RateLimiterException("Limit type is not SlidingLogLimit");
     }
 
     @Override
