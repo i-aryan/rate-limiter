@@ -4,19 +4,17 @@ import java.time.Duration;
 
 public class Limit {
     private Integer capacity;
-    private Integer refillRate;
+    private Integer Rate;
     private Integer lookBackCount;
     private Duration period;
-    private Integer dispatchInterval;
     private String limitId;
 
-    public Limit(String limitId, Integer capacity, Duration period, Integer refillRate, Integer lookBackCount, Integer dispatchInterval){
+    public Limit(String limitId, Integer capacity, Duration period, Integer Rate, Integer lookBackCount){
         this.limitId = limitId;
         this.capacity = capacity;
         this.period = period;
-        this.refillRate = refillRate;
+        this.Rate = Rate;
         this.lookBackCount = lookBackCount;
-        this.dispatchInterval = dispatchInterval;
     }
 
     public Integer getCapacity() {
@@ -27,12 +25,12 @@ public class Limit {
         this.capacity = capacity;
     }
 
-    public Integer getRefillRate() {
-        return refillRate;
+    public Integer getRate() {
+        return Rate;
     }
 
-    public void setRefillRate(Integer refillRate) {
-        this.refillRate = refillRate;
+    public void setRate(Integer refillRate) {
+        this.Rate = refillRate;
     }
 
     public Integer getLookBackCount() {
@@ -51,13 +49,6 @@ public class Limit {
         this.period = period;
     }
 
-    public Integer getDispatchInterval() {
-        return dispatchInterval;
-    }
-
-    public void setDispatchInterval(Integer dispatchInterval) {
-        this.dispatchInterval = dispatchInterval;
-    }
     @Override
     public String toString() {
         return limitId;

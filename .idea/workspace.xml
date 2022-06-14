@@ -5,16 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1b47b8b7-344d-425e-aca3-7fce8230502b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/RateLimiterException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/RateLimiterManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/RateLimiterType.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/FixedWindowRateLimiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/FixedWindowRateLimiter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/LeakyBucketRateLimiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/LeakyBucketRateLimiter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/RateLimiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/RateLimiter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/RateLimiterError.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/SlidingLogRateLimiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/SlidingLogRateLimiter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/SlidingWidowRateLimiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/SlidingWidowRateLimiter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/TokenBucketRateLimiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/TokenBucketRateLimiter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/limit/FixedWindowLimit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/limit/FixedWindowLimit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/limit/LeakyBucketLimit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/limit/LeakyBucketLimit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/limit/Limit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/limit/Limit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/limit/SlidingLogLimit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/limit/SlidingLogLimit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/limit/SlidingWindowLimit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/limit/SlidingWindowLimit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/limit/TokenBucketLimit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/limit/TokenBucketLimit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/luascript/LeakyBucketLuaScript.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/luascript/LeakyBucketLuaScript.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +26,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -94,7 +97,7 @@
       <workItem from="1654939736362" duration="12287000" />
       <workItem from="1655019854366" duration="21007000" />
       <workItem from="1655099913882" duration="19353000" />
-      <workItem from="1655184081114" duration="8737000" />
+      <workItem from="1655184081114" duration="13219000" />
     </task>
     <servers />
   </component>

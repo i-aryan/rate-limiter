@@ -7,7 +7,7 @@ public class LeakyBucketLuaScript extends LuaScript{
             "local timestampKey = KEYS[2]; " +
             " " +
             "local capacity = tonumber(ARGV[1]); " +
-            "local dispatchInterval = tonumber(ARGV[2]); " +
+            "local dispatchInterval = math.ceil(1000/tonumber(ARGV[2])); " +
             "local timestamp = tonumber(ARGV[3]); " +
             "local setKeyName = ARGV[4]; " +
             " " +

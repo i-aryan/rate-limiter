@@ -38,7 +38,7 @@ public class TokenBucketRateLimiter extends RateLimiter{
                         RateLimiterUtility.getTimestampKey(identity, this.toString(), limit.toString()));
                 List<String> args = Arrays.asList(
                         Integer.toString(limit.getCapacity()),
-                        Integer.toString(limit.getRefillRate()),
+                        Integer.toString(limit.getRate()),
                         Long.toString(timestamp),
                         Integer.toString(cost)
                 );
