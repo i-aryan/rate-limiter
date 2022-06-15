@@ -3,6 +3,8 @@ package in.aryanverma;
 import in.aryanverma.limit.FixedWindowLimit;
 import in.aryanverma.limit.Limit;
 import in.aryanverma.limit.SlidingLogLimit;
+import in.aryanverma.luascript.FixedWindowLuaScript;
+import in.aryanverma.luascript.LuaScript;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Response;
@@ -16,6 +18,10 @@ public class SlidingLogRateLimiter extends RateLimiter{
 
     public SlidingLogRateLimiter(JedisPool jedisPool){
         super(jedisPool);
+    }
+
+    protected LuaScript createLuaScript(Jedis jedis) {
+        return new FixedWindowLuaScript(jedis);
     }
     @Override
     public boolean tryRequest(String identity, int cost) {

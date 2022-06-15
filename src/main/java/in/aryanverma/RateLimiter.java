@@ -1,6 +1,7 @@
 package in.aryanverma;
 
 import in.aryanverma.limit.*;
+import in.aryanverma.luascript.LuaScript;
 import redis.clients.jedis.*;
 
 import java.time.Duration;
@@ -13,10 +14,14 @@ import java.util.concurrent.Executors;
 public abstract class RateLimiter {
 
     protected final JedisPool jedisPool;
+    protected LuaScript script;
     protected List<Limit> limits = new ArrayList<>();
 
     public RateLimiter(JedisPool jedisPool){
         this.jedisPool = jedisPool;
+        try(Jedis jedis = jedisPool.getResource()){
+            this.script = createLuaScript(jedis);
+        }
     }
     public abstract boolean tryRequest(String identity, int cost) throws RateLimiterException;
 
@@ -33,6 +38,7 @@ public abstract class RateLimiter {
     }
 
     protected abstract void checkLimitType(Limit limit) throws RateLimiterException;
+    protected abstract LuaScript createLuaScript(Jedis jedis);
 
     public static void main(String[] args) throws RateLimiterException{
         JedisPool jedisPool1 = new JedisPool("localhost", 6379);

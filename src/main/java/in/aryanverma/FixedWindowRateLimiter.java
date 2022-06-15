@@ -16,13 +16,12 @@ import java.util.List;
 
 public class FixedWindowRateLimiter extends RateLimiter{
 
-    protected LuaScript script;
     public FixedWindowRateLimiter(JedisPool jedisPool) {
         super(jedisPool);
-        try (Jedis jedis = jedisPool.getResource()) {
-            script = new FixedWindowLuaScript(jedis);
+    }
 
-        }
+    protected LuaScript createLuaScript(Jedis jedis) {
+        return new FixedWindowLuaScript(jedis);
     }
     @Override
     public boolean tryRequest(String identity, int cost) throws RateLimiterException {

@@ -3,6 +3,7 @@ package in.aryanverma;
 import in.aryanverma.limit.FixedWindowLimit;
 import in.aryanverma.limit.Limit;
 import in.aryanverma.limit.SlidingWindowLimit;
+import in.aryanverma.luascript.FixedWindowLuaScript;
 import in.aryanverma.luascript.LuaScript;
 import in.aryanverma.luascript.SlidingWindowLuaScript;
 import redis.clients.jedis.*;
@@ -13,13 +14,12 @@ import java.util.List;
 
 public class SlidingWidowRateLimiter extends RateLimiter{
 
-    private LuaScript script;
-
     public SlidingWidowRateLimiter(JedisPool jedisPool){
         super(jedisPool);
-        try(Jedis jedis = jedisPool.getResource()) {
-            script = new SlidingWindowLuaScript(jedis);
-        }
+    }
+
+    protected LuaScript createLuaScript(Jedis jedis) {
+        return new SlidingWindowLuaScript(jedis);
     }
     @Override
     public boolean tryRequest(String identity, int cost) {

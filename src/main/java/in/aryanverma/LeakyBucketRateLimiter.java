@@ -3,6 +3,7 @@ package in.aryanverma;
 import in.aryanverma.limit.FixedWindowLimit;
 import in.aryanverma.limit.LeakyBucketLimit;
 import in.aryanverma.limit.Limit;
+import in.aryanverma.luascript.FixedWindowLuaScript;
 import in.aryanverma.luascript.LeakyBucketLuaScript;
 import in.aryanverma.luascript.LuaScript;
 import redis.clients.jedis.Jedis;
@@ -14,12 +15,12 @@ import java.util.List;
 
 public class LeakyBucketRateLimiter extends RateLimiter{
 
-    private LuaScript script;
     public LeakyBucketRateLimiter(JedisPool jedisPool) {
         super(jedisPool);
-        try(Jedis jedis = jedisPool.getResource()) {
-            script = new LeakyBucketLuaScript(jedis);
-        }
+    }
+
+    protected LuaScript createLuaScript(Jedis jedis) {
+        return new LeakyBucketLuaScript(jedis);
     }
     @Override
     public boolean tryRequest(String identity, int cost) throws RateLimiterException {

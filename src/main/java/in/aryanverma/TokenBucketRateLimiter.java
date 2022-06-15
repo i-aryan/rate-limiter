@@ -3,6 +3,7 @@ package in.aryanverma;
 import in.aryanverma.limit.FixedWindowLimit;
 import in.aryanverma.limit.Limit;
 import in.aryanverma.limit.TokenBucketLimit;
+import in.aryanverma.luascript.FixedWindowLuaScript;
 import in.aryanverma.luascript.LuaScript;
 import in.aryanverma.luascript.TokenBucketLuaScript;
 import redis.clients.jedis.Jedis;
@@ -17,13 +18,12 @@ import java.util.List;
 
 public class TokenBucketRateLimiter extends RateLimiter{
 
-    private final LuaScript script;
 
     public TokenBucketRateLimiter(JedisPool jedisPool){
         super(jedisPool);
-        try(Jedis jedis = jedisPool.getResource()) {
-            script = new TokenBucketLuaScript(jedis);
-        }
+    }
+    protected LuaScript createLuaScript(Jedis jedis) {
+        return new TokenBucketLuaScript(jedis);
     }
     @Override
     public boolean tryRequest(String identity, int cost) {
