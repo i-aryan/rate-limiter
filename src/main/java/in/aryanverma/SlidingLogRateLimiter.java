@@ -12,6 +12,7 @@ import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SlidingLogRateLimiter extends RateLimiter{
@@ -27,30 +28,24 @@ public class SlidingLogRateLimiter extends RateLimiter{
     @Override
     public boolean tryRequest(String identity, int cost) {
         long timestamp = System.currentTimeMillis();
-        boolean allow = true;
         try(Jedis jedis = jedisPool.getResource()){
-//            long temptime = System.currentTimeMillis();
-            List<Response<Long>> responseList =  new ArrayList<>();
-            Transaction transaction = jedis.multi();
             String key = RateLimiterUtility.getKey(identity, this.toString(), "nill");
-            transaction.zadd(key, timestamp, RateLimiterUtility.getKeyWithRandomNumber(timestamp));
-            long maxPeriod = 0;
+            List<String> argv = new ArrayList<>();
+            argv.add(Long.toString(timestamp));
+            argv.add(RateLimiterUtility.getKeyWithRandomNumber(timestamp));
+            argv.add(Integer.toString(cost));
             for(Limit limit: this.limits){
-                maxPeriod = Math.max(maxPeriod, limit.getPeriod().getSeconds());
-                Response<Long> response = transaction.zcount(key, timestamp-limit.getPeriod().getSeconds()*1000+1, timestamp+10000);
-                responseList.add(response);
+                argv.add(limit.getCapacity().toString());
+                argv.add(Long.toString(limit.getPeriod().getSeconds()));
             }
-            transaction.zremrangeByScore(key, 0, timestamp - maxPeriod*1000 - 10000);
-            transaction.expire(key, maxPeriod);
-            transaction.exec();
-            int index = 0;
-            for(Limit limit: this.limits){
-                if(responseList.get(index++).get() > limit.getCapacity()) allow = false;
+            Object response = jedis.evalsha(this.script.getSha(), Arrays.asList(key), argv);
+            if((Long)response==0) {
+                System.out.println(timestamp/1000 + ",false " + timestamp);
+                return false;
             }
-//           System.out.println(timestamp + ", " + allow + ", count:"+responseList.get(0).get() +", timestamp enter:" +temptime);
-            System.out.println(timestamp/1000 + ","+ allow);
+            System.out.println(timestamp/1000 + ",true " + timestamp);
         }
-        return allow;
+        return true;
     }
 
     @Override
