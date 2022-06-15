@@ -18,29 +18,20 @@ public class FixedWindowRateLimiter extends RateLimiter{
     @Override
     public boolean tryRequest(String identity, int cost) throws RateLimiterException {
         if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
-//        List<Long> buckets = new ArrayList<>();
-        boolean allow = true;
         long timestamp = System.currentTimeMillis()/1000;
         try(Jedis jedis = this.jedisPool.getResource()){
             int index = 0;
-            Transaction transaction = jedis.multi();
-            List<Response<Long>> responseList = new ArrayList<>();
             for(Limit limit: this.limits){
                 long bucket = (timestamp/limit.getPeriod().getSeconds())*(limit.getPeriod().getSeconds());
-//                buckets.add(bucket);
                 String key = RateLimiterUtility.getKeyWithTimestamp(identity, this.toString(), limit.toString(), bucket);
-                Response<Long> counter = transaction.incrBy(key, cost);
-                responseList.add(counter);
-                transaction.expire(key, 2*limit.getPeriod().getSeconds());
-            }
-            transaction.exec();
-            index = 0;
-            for(Limit limit: this.limits){
-                if(responseList.get(index++).get() > limit.getCapacity()) allow = false;
+                Long counter = jedis.incrBy(key, cost);
+                jedis.expire(key, 2*limit.getPeriod().getSeconds());
+                if(counter>limit.getCapacity()) {
+                    return false;
+                }
             }
         }
-        //System.out.println(buckets.get(0) + ", " + buckets.get(1) + "," + allow);
-        return allow;
+        return true;
     }
 
     @Override
