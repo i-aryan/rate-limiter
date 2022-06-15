@@ -42,8 +42,8 @@ public abstract class RateLimiter {
 
     public static void main(String[] args) throws RateLimiterException{
         JedisPool jedisPool1 = new JedisPool("localhost", 6379);
-        RateLimiter rateLimiter = RateLimiterManager.createRateLimiter(jedisPool1, RateLimiterType.SLIDING_WINDOW);
-        rateLimiter.addLimit(new SlidingWindowLimit("test", 4, Duration.ofSeconds(1), 5));
+        RateLimiter rateLimiter = RateLimiterManager.createRateLimiter(jedisPool1, RateLimiterType.LEAKY_BUCKET);
+        rateLimiter.addLimit(new LeakyBucketLimit("test", 4, 1));
 
         ExecutorService executor = Executors.newFixedThreadPool(10);
         Random random = new Random();
@@ -69,7 +69,7 @@ class PretendRequest implements Runnable {
             Thread.sleep(this.sleepTime);
         }catch (InterruptedException e){}
         try {
-            rateLimiter.tryRequest("Thread.currentThread().getName()", 1);
+            rateLimiter.tryRequest("Thread.currentThread().getName()", 2);
         }
         catch (RateLimiterException e){
             System.out.println(e);

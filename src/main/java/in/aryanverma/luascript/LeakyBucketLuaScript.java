@@ -10,11 +10,11 @@ public class LeakyBucketLuaScript extends LuaScript{
             "local dispatchInterval = math.ceil(1000/tonumber(ARGV[2])); " +
             "local timestamp = tonumber(ARGV[3]); " +
             "local setKeyName = ARGV[4]; " +
-            " " +
+            "local cost = tonumber(ARGV[5]) " +
             "redis.call('zremrangebyscore', keyName, 0, timestamp); " +
             "local queueSize = tonumber(redis.call('zcard', keyName)); " +
             " " +
-            "if queueSize >= capacity then " +
+            "if queueSize + cost > capacity then " +
             "return {0, 0}; " +
             "end " +
             " " +
@@ -27,7 +27,10 @@ public class LeakyBucketLuaScript extends LuaScript{
             "newDispatchTime = timestamp " +
             "end " +
             "redis.call('setex', timestampKey, math.ceil(2*capacity*dispatchInterval/1000), newDispatchTime); " +
+            "for i=1, cost do "+
+            "setKeyName = setKeyName .. '*' "+
             "redis.call('zadd', keyName, newDispatchTime, setKeyName); " +
+            "end "+
             "redis.call('expire', keyName, math.ceil(2*capacity*dispatchInterval/1000)); " +
             "return {1, newDispatchTime}; ";
 
