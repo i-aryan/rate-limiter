@@ -8,7 +8,6 @@ public class RateLimiterUtility {
     public static String getKeyWithTimestamp(String identity, String rateLimiterType, String limitId, long timestamp){
         return identity + ":" + rateLimiterType + ":" + limitId + ":" + timestamp;
     }
-
     public static String getKey(String identity, String rateLimiterType, String limitId){
         return identity + ":" + rateLimiterType + ":" + limitId;
     }

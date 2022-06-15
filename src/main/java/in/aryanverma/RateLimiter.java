@@ -3,6 +3,7 @@ package in.aryanverma;
 import in.aryanverma.limit.*;
 import redis.clients.jedis.*;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -35,12 +36,12 @@ public abstract class RateLimiter {
 
     public static void main(String[] args) throws RateLimiterException{
         JedisPool jedisPool1 = new JedisPool("localhost", 6379);
-        RateLimiter rateLimiter = RateLimiterManager.createRateLimiter(jedisPool1, RateLimiterType.LEAKY_BUCKET);
-        rateLimiter.addLimit(new LeakyBucketLimit("test", 5, 2));
+        RateLimiter rateLimiter = RateLimiterManager.createRateLimiter(jedisPool1, RateLimiterType.SLIDING_WINDOW);
+        rateLimiter.addLimit(new SlidingWindowLimit("test", 5, Duration.ofSeconds(1),5));
 
-        ExecutorService executor = Executors.newFixedThreadPool(10);
+        ExecutorService executor = Executors.newFixedThreadPool(5);
         Random random = new Random();
-        for(int i=0; i<10000; i++){
+        for(int i=0; i<100; i++){
             PretendRequest request = new PretendRequest(rateLimiter,(1 + random.nextInt(10) )*1000);
             executor.execute(request);
         }
