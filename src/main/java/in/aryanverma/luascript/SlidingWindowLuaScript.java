@@ -8,6 +8,7 @@ public class SlidingWindowLuaScript extends LuaScript {
             "local period = tonumber(ARGV[2]); " +
             "local lookbackCount = tonumber(ARGV[3]); " +
             "local timestamp = tonumber(ARGV[4]); " +
+            "local cost = tonumber(ARGV[5]); " +
             " " +
             "local bucket = math.floor(timestamp/period)*period; " +
             "local keys = redis.call('hkeys', keyName); " +
@@ -26,10 +27,10 @@ public class SlidingWindowLuaScript extends LuaScript {
             "if extraBucket ~=nil then " +
             "sum = sum-math.floor(extraBucket/period)*(timestamp - bucket); " +
             "end " +
-            "if sum >= capacity then " +
+            "if sum + cost>capacity then " +
             "return 0; " +
             "end " +
-            "redis.call('hincrby', keyName, tostring(bucket), 1); " +
+            "redis.call('hincrby', keyName, tostring(bucket), cost); " +
             "redis.call('expire', keyName, math.floor((lookbackCount+2)*period/1000)); " +
             "return 1; ";
 

@@ -29,7 +29,7 @@ public class SlidingWidowRateLimiter extends RateLimiter{
             for(Limit limit: this.limits){
                 String key = RateLimiterUtility.getKey(identity, this.toString(), limit.toString());
                 List<String> keys = Arrays.asList(key);
-                List<String> argv = Arrays.asList(limit.getCapacity().toString(), Long.toString(limit.getPeriod().getSeconds()*1000), limit.getLookBackCount().toString(), Long.toString(timestamp));
+                List<String> argv = Arrays.asList(limit.getCapacity().toString(), Long.toString(limit.getPeriod().getSeconds()*1000), limit.getLookBackCount().toString(), Long.toString(timestamp), Integer.toString(cost));
                 Object response= jedis.evalsha(this.script.getSha(), keys, argv);
                 if((Long)response == 0) {
                     System.out.println(timestamp/1000 + ", false");
