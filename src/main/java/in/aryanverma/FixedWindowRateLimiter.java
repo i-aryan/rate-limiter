@@ -1,5 +1,6 @@
 package in.aryanverma;
 
+import com.google.gson.internal.bind.util.ISO8601Utils;
 import in.aryanverma.limit.FixedWindowLimit;
 import in.aryanverma.limit.Limit;
 import in.aryanverma.luascript.FixedWindowLuaScript;
@@ -27,6 +28,7 @@ public class FixedWindowRateLimiter extends RateLimiter{
     public boolean tryRequest(String identity, int cost) throws RateLimiterException {
         if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
         long timestamp = System.currentTimeMillis()/1000;
+//        long timestamp2 = System.currentTimeMillis();
         try(Jedis jedis = this.jedisPool.getResource()){
             for(Limit limit: this.limits){
                 long bucket = (timestamp/limit.getPeriod().getSeconds())*(limit.getPeriod().getSeconds());
@@ -34,12 +36,12 @@ public class FixedWindowRateLimiter extends RateLimiter{
                 List<String> argv = Arrays.asList(limit.getCapacity().toString(), Long.toString(limit.getPeriod().getSeconds()), Integer.toString(cost));
                 Object counter = jedis.evalsha(script.getSha(), Arrays.asList(key), argv);
                 if((Long)counter == 0) {
-                    System.out.println(timestamp/3 + ", false, " + timestamp/6);
+//                    System.out.println(timestamp + ", false, " + System.currentTimeMillis());
                     return false;
                 }
             }
         }
-        System.out.println(timestamp/3 + ", true, " + timestamp/6);
+//        System.out.println(timestamp2 + ", true, " + System.currentTimeMillis());
         return true;
     }
 

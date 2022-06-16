@@ -22,7 +22,8 @@ public class SlidingWidowRateLimiter extends RateLimiter{
         return new SlidingWindowLuaScript(jedis);
     }
     @Override
-    public boolean tryRequest(String identity, int cost) {
+    public boolean tryRequest(String identity, int cost) throws RateLimiterException{
+        if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
         long timestamp = System.currentTimeMillis();
         try(Jedis jedis = jedisPool.getResource()){
             int index = 0;

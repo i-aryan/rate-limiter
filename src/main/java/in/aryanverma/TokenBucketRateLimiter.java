@@ -26,13 +26,10 @@ public class TokenBucketRateLimiter extends RateLimiter{
         return new TokenBucketLuaScript(jedis);
     }
     @Override
-    public boolean tryRequest(String identity, int cost) {
-        boolean allow = true;
+    public boolean tryRequest(String identity, int cost) throws RateLimiterException{
+        if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
         long timestamp = System.currentTimeMillis();
         try(Jedis jedis = jedisPool.getResource()){
-
-            List<Response<Object>> responseList = new ArrayList<>();
-            Transaction transaction = jedis.multi();
             for(Limit limit: limits) {
                 List<String> keys = Arrays.asList(RateLimiterUtility.getKey(identity, this.toString(), limit.toString()),
                         RateLimiterUtility.getTimestampKey(identity, this.toString(), limit.toString()));
@@ -42,16 +39,15 @@ public class TokenBucketRateLimiter extends RateLimiter{
                         Long.toString(timestamp),
                         Integer.toString(cost)
                 );
-                Response<Object> response = transaction.evalsha(script.getSha(), keys, args);
-                responseList.add(response);
-            }
-            transaction.exec();
-            for(Response<Object> response: responseList){
-                if((Long)response.get()== 0) allow = false;
+                Object response = jedis.evalsha(script.getSha(), keys, args);
+                if((Long)response == 0) {
+                    System.out.println(timestamp/1000 + ", false");
+                    return false;
+                }
             }
         }
-        System.out.println(timestamp/1000 + ", "+ allow);
-        return allow;
+        System.out.println(timestamp/1000 + ", true");
+        return true;
     }
 
     @Override

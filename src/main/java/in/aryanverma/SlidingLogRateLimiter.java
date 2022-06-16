@@ -26,7 +26,8 @@ public class SlidingLogRateLimiter extends RateLimiter{
         return new SlidingLogLuaScript(jedis);
     }
     @Override
-    public boolean tryRequest(String identity, int cost) {
+    public boolean tryRequest(String identity, int cost) throws RateLimiterException{
+        if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
         long timestamp = System.currentTimeMillis();
         try(Jedis jedis = jedisPool.getResource()){
             String key = RateLimiterUtility.getKey(identity, this.toString(), "nill");

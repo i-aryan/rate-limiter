@@ -36,12 +36,11 @@ public class LeakyBucketRateLimiter extends RateLimiter{
             List<String> argv = Arrays.asList(limit.getCapacity().toString(), limit.getRate().toString(), Long.toString(timestamp), RateLimiterUtility.getKeyWithRandomNumber(timestamp), Integer.toString(cost));
             response = jedis.evalsha(script.getSha(), keys, argv);
         }
-//        System.out.println(((ArrayList<Long>)response).get(0));
+
         if (((ArrayList<Long>)response).get(0) == 0) {
 //            System.out.println(timestamp/1000 + ", false");
             return false;
         }
-//        System.out.println(((ArrayList<Long>)response).get(1));
 //        try {
 //            Thread.sleep(((ArrayList<Long>)response).get(1));
 //        }

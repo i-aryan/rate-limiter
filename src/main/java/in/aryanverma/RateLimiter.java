@@ -40,40 +40,40 @@ public abstract class RateLimiter {
     protected abstract void checkLimitType(Limit limit) throws RateLimiterException;
     protected abstract LuaScript createLuaScript(Jedis jedis);
 
-    public static void main(String[] args) throws RateLimiterException{
-        JedisPool jedisPool1 = new JedisPool("localhost", 6379);
-        RateLimiter rateLimiter = RateLimiterManager.createRateLimiter(jedisPool1, RateLimiterType.SLIDING_LOG);
-        rateLimiter.addLimit(new SlidingLogLimit("test", 4, Duration.ofSeconds(5)));
-
-        ExecutorService executor = Executors.newFixedThreadPool(10);
-        Random random = new Random();
-        for(int i=0; i<100; i++){
-            PretendRequest request = new PretendRequest(rateLimiter,(1 + random.nextInt(10) )*1000);
-            executor.execute(request);
-        }
-        executor.shutdown();
-    }
+//    public static void main(String[] args) throws RateLimiterException{
+//        JedisPool jedisPool1 = new JedisPool("localhost", 6379);
+//        RateLimiter rateLimiter = RateLimiterManager.createRateLimiter(jedisPool1, RateLimiterType.TOKEN_BUCKET);
+//        rateLimiter.addLimit(new TokenBucketLimit("test", 1, 1));
+//
+//        ExecutorService executor = Executors.newFixedThreadPool(10);
+//        Random random = new Random();
+//        for(int i=0; i<100; i++){
+//            PretendRequest request = new PretendRequest(rateLimiter,(1 + random.nextInt(5) )*1000);
+//            executor.execute(request);
+//        }
+//        executor.shutdown();
+//    }
 }
 
-class PretendRequest implements Runnable {
-    private RateLimiter rateLimiter;
-    private int sleepTime;
-    public PretendRequest(RateLimiter rateLimiter, int sleepTime){
-        this.rateLimiter = rateLimiter;
-        this.sleepTime = sleepTime;
-    }
-
-    @Override
-    public void run() {
-        try{
-            Thread.sleep(this.sleepTime);
-        }catch (InterruptedException e){}
-        try {
-            rateLimiter.tryRequest("Thread.currentThread().getName()", 1);
-        }
-        catch (RateLimiterException e){
-            System.out.println(e);
-        }
-    }
-}
-
+//class PretendRequest implements Runnable {
+//    private RateLimiter rateLimiter;
+//    private int sleepTime;
+//    public PretendRequest(RateLimiter rateLimiter, int sleepTime){
+//        this.rateLimiter = rateLimiter;
+//        this.sleepTime = sleepTime;
+//    }
+//
+//    @Override
+//    public void run() {
+//        try{
+//            Thread.sleep(this.sleepTime);
+//        }catch (InterruptedException e){}
+//        try {
+//            rateLimiter.tryRequest("Thread.currentThread().getName()", 1);
+//        }
+//        catch (RateLimiterException e){
+//            System.out.println(e);
+//        }
+//    }
+//}
+//
