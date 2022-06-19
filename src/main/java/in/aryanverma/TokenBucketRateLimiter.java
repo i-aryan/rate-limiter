@@ -41,12 +41,12 @@ public class TokenBucketRateLimiter extends RateLimiter{
                 );
                 Object response = jedis.evalsha(script.getSha(), keys, args);
                 if((Long)response == 0) {
-                    System.out.println(timestamp/1000 + ", false");
+//                    System.out.println(timestamp/1000 + ", false");
                     return false;
                 }
             }
         }
-        System.out.println(timestamp/1000 + ", true");
+//        System.out.println(timestamp/1000 + ", true");
         return true;
     }
 

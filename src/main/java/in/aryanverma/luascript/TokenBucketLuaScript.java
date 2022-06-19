@@ -33,6 +33,7 @@ public class TokenBucketLuaScript extends LuaScript{
             "redis.call('setex', timestampKey, math.ceil(2*capacity/rate), timestamp); " +
             " " +
             "return allow;";
+
     public TokenBucketLuaScript(Jedis jedis){
         loadScript(jedis, script);
     }

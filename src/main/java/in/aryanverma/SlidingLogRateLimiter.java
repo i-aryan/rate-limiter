@@ -41,10 +41,10 @@ public class SlidingLogRateLimiter extends RateLimiter{
             }
             Object response = jedis.evalsha(this.script.getSha(), Arrays.asList(key), argv);
             if((Long)response==0) {
-                System.out.println(timestamp/1000 + ",false " + timestamp);
+//                System.out.println(timestamp/1000 + ",false " + timestamp);
                 return false;
             }
-            System.out.println(timestamp/1000 + ",true " + timestamp);
+//            System.out.println(timestamp/1000 + ",true " + timestamp);
         }
         return true;
     }

@@ -33,12 +33,12 @@ public class SlidingWidowRateLimiter extends RateLimiter{
                 List<String> argv = Arrays.asList(limit.getCapacity().toString(), Long.toString(limit.getPeriod().getSeconds()*1000), limit.getLookBackCount().toString(), Long.toString(timestamp), Integer.toString(cost));
                 Object response= jedis.evalsha(this.script.getSha(), keys, argv);
                 if((Long)response == 0) {
-                    System.out.println(timestamp/1000 + ", false");
+//                    System.out.println(timestamp/1000 + ", false");
                     return false;
                 }
             }
         }
-        System.out.println(timestamp/1000 + ", true");
+//        System.out.println(timestamp/1000 + ", true");
         return  true;
     }
 

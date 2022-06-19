@@ -42,12 +42,12 @@ public abstract class RateLimiter {
 
 //    public static void main(String[] args) throws RateLimiterException{
 //        JedisPool jedisPool1 = new JedisPool("localhost", 6379);
-//        RateLimiter rateLimiter = RateLimiterManager.createRateLimiter(jedisPool1, RateLimiterType.TOKEN_BUCKET);
-//        rateLimiter.addLimit(new TokenBucketLimit("test", 1, 1));
+//        RateLimiter rateLimiter = RateLimiterManager.createRateLimiter(jedisPool1, RateLimiterType.LEAKY_BUCKET);
+//        rateLimiter.addLimit(new LeakyBucketLimit("test", 1, 1));
 //
-//        ExecutorService executor = Executors.newFixedThreadPool(10);
+//        ExecutorService executor = Executors.newFixedThreadPool(100);
 //        Random random = new Random();
-//        for(int i=0; i<100; i++){
+//        for(int i=0; i<1000; i++){
 //            PretendRequest request = new PretendRequest(rateLimiter,(1 + random.nextInt(5) )*1000);
 //            executor.execute(request);
 //        }
@@ -76,4 +76,3 @@ public abstract class RateLimiter {
 //        }
 //    }
 //}
-//

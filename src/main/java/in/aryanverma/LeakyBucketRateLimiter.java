@@ -49,7 +49,7 @@ public class LeakyBucketRateLimiter extends RateLimiter{
 //        }
         while(((ArrayList<Long>)response).get(1)>System.currentTimeMillis());
 
-        System.out.println(timestamp + ", true, " + System.currentTimeMillis() + ", wait:" + ((ArrayList<Long>)response).get(1));
+//        System.out.println(identity + ", " + timestamp + ", true, " + System.currentTimeMillis() + ", wait:" + ((ArrayList<Long>)response).get(1));
         return true;
     }
     @Override

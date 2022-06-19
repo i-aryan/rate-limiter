@@ -1,10 +1,10 @@
 package in.aryanverma;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RateLimiterUtility {
 
-    private static Random randomNumber= new Random();
     public static String getKeyWithTimestamp(String identity, String rateLimiterType, String limitId, long timestamp){
         return identity + ":" + rateLimiterType + ":" + limitId + ":" + timestamp;
     }
@@ -16,6 +16,6 @@ public class RateLimiterUtility {
     }
 
     public static String getKeyWithRandomNumber(long timestamp){
-        return timestamp + ":" + randomNumber.nextInt(100);
+        return timestamp + ":" + ThreadLocalRandom.current().nextInt(100);
     }
 }
