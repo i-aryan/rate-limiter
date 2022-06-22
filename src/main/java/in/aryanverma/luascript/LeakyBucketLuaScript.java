@@ -32,7 +32,7 @@ public class LeakyBucketLuaScript extends LuaScript{
             "redis.call('zadd', keyName, newDispatchTime, setKeyName); " +
             "end "+
             "redis.call('expire', keyName, math.ceil(2*capacity*dispatchInterval/1000)); " +
-            "return {1, newDispatchTime}; ";
+            "return {1, newDispatchTime-timestamp}; ";
 
     public LeakyBucketLuaScript(Jedis jedis){
         loadScript(jedis, script);

@@ -43,7 +43,7 @@ public abstract class RateLimiter {
 //    public static void main(String[] args) throws RateLimiterException{
 //        JedisPool jedisPool1 = new JedisPool("localhost", 6379);
 //        RateLimiter rateLimiter = RateLimiterManager.createRateLimiter(jedisPool1, RateLimiterType.LEAKY_BUCKET);
-//        rateLimiter.addLimit(new LeakyBucketLimit("test", 1, 1));
+//        rateLimiter.addLimit(new LeakyBucketLimit("test", 5, 1));
 //
 //        ExecutorService executor = Executors.newFixedThreadPool(100);
 //        Random random = new Random();
