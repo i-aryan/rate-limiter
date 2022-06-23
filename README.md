@@ -1,2 +1,62 @@
-# rate-limiter
+# Rate Limiter
 API Rate Limiter library built in Java. Uses Redis for the central datastore.
+
+## Introduction
+A Rate limiter is used to regulate the number of requests your API services are receving. For example, having rate limits of 100 requests per minute and 1000 requets per hour on some API you are providing to your service customres. This library offers 5 different algorithmic implementation of Rate limiter namely
+- Token Bucket
+- Fixed Window
+- Sliding Log
+- Sliding Window
+- Leaky Bucket
+
+Every implementation with an exception of Leaky Bucket allows you to add multiple limits which could be used for regulate requests per second/minute/hour/day or any duration that you want to put a limit on. It also allows you to have a cost associated with an API call so a single instance of rate limiter could be used on APIs demanding different rate limits by adjusting the cost.
+
+## Usage
+
+### Intialisation
+After cloning the repository, you can build it into a JAR file and have it imported into your project. 
+
+Then you would need to instantite a JedisPool object with max connections that suits your requirements and pass it as an argument to the create rate limiter method.
+
+```
+JedisPool jedisPool = new JedisPool(hostName, port);
+RateLimiter rateLimiter = RateLimiterManager.createRateLimiter(jedisPool, RateLimiterType.SLIDING_LOG);
+```
+
+### Adding Limits
+
+Limits can be added at any time as the limit instance variable is thread safe. To add a limit
+
+```
+rateLimiter.addLimit(new SlidingLogLImit("limit_name", 5, Duration.ofSeconds(10))).addLimit(new SlidingLogLimit("limit_name2", 30, Duration.ofMinute(1)));
+```
+
+This adds limits of 5 requests per 10 seconds and 30 requests per minute to our rate limiter.
+
+### Adding rate limiter to an API
+
+Inside your method that handles the API call, you will have to add
+
+```
+try {
+    rateLimiter.tryRequest(identity, cost);
+}
+catch (RateLimiterException e){
+    //handle error
+}
+```
+
+tryRequest returns a boolean indicating whether the requesst should be let through or not. In case of leaky bucket, if the request is allowed then True is returned after waiting for the duration required by the algorithm. This method throws an exception if limit does not exist, there's a limit type mistach or for leaky bucket if there's more than one limit. This should be handled in the catch block and ideally the request should be allowed if the rateLimiter throws an exception so your service isn't down.
+
+For a demo Spring API, the code would look like:
+
+```
+@GetMapping("/")
+public String index(@RequestHeader("identity") String identity) throws RateLimiterException {
+    if(!(rateLimiter.tryRequest(identity))){
+        throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Calm down.");
+    }
+    return identity;
+}
+```
+
