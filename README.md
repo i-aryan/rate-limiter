@@ -2,18 +2,21 @@
 API Rate Limiter library built in Java. Uses Redis for the central datastore.
 
 ## Introduction
-A Rate limiter is used to regulate the number of requests your API services are receving. For example, having rate limits of 100 requests per minute and 1000 requets per hour on some API you are providing to your service customres. This library offers 5 different algorithmic implementation of Rate limiter namely
+A Rate limiter is used to regulate the number of requests your API services are receiving. For example, having rate limits of 100 requests per minute and 1000 requests per hour on some APIs you provide to your service customers. This library offers 5 different algorithmic implementations of the Rate limiter namely
 - Token Bucket
 - Fixed Window
 - Sliding Log
 - Sliding Window
 - Leaky Bucket
 
-Every implementation with an exception of Leaky Bucket allows you to add multiple limits which could be used for regulate requests per second/minute/hour/day or any duration that you want to put a limit on. It also allows you to have a cost associated with an API call so a single instance of rate limiter could be used on APIs demanding different rate limits by adjusting the cost.
+Every implementation with an exception of Leaky Bucket allows you to add multiple limits which could be used for regulating requests per second/minute/hour/day or any duration that you want to put a limit on. It also allows you to have a cost associated with an API call so a single instance of rate limiter could be used on APIs demanding different rate limits by adjusting the cost.
+
+### Dependencies
+This project uses **Jedis**, a Redis client library for Java to make connections to Redis and issue queries.
 
 ### Limits
 
-For every implementation we have separate limit type to be used with them as they require different parameters.
+For every implementation, we have separate limit types to be used with them as they require different parameters.
 
 ```
 1. TokenBucketLimit(String limitId, Integer capacity, Integer refillRate)
@@ -28,31 +31,31 @@ For every implementation we have separate limit type to be used with them as the
 ```
 2. FixedWindowLimit(String limitId, Integer capacity, Duration period)
 ```
-- **period**: Duration of each bucket/interval after which the counters gets reset.
+- **period**: Duration of each bucket/interval after which the counters get reset.
 
 ```
 3. SlidingLogLimit(String limitId, Integer capacity, Duration period)
 ```
-- **period**: Here the period is a rolling window interval. Requests are counted between current time and current time minus the period.
+- **period**: Here the period is a rolling window interval. Requests are counted between the current time and current time minus the period.
 
 ```
 4. SlidingWindowLimit(String limitId, Integer capacity, Duration period, Integer lookBackCount)
 ```
-- **lookBackCount**: Numbers of buckets to sum over while checking comparing with capacity.
+- **lookBackCount**: Numbers of buckets to sum over while checking to compare with capacity.
 
 ```
 5. LeakyBucketLimit(String limitId, Integer capacity, Integer Rate)
 ```
-- **capacity**: Capacity of the queue. Requests arriving after queue is full are discarded.
+- **capacity**: Capacity of the queue. Requests arriving after the queue is full are discarded.
 
-- **Rate**: Rate at which the requests are processed in per second.
+- **Rate**: The rate at which the requests are processed per second.
 
 ## Usage
 
 ### Intialisation
 After cloning the repository, you can build it into a JAR file and have it imported into your project. 
 
-Then you would need to instantite a JedisPool object with max connections that suits your requirements and pass it as an argument to the create rate limiter method.
+Then you would need to instantiate a JedisPool object with max connections that suits your requirements and pass it as an argument to the create rate limiter method.
 
 ```
 JedisPool jedisPool = new JedisPool(hostName, port);
@@ -61,7 +64,7 @@ RateLimiter rateLimiter = RateLimiterManager.createRateLimiter(jedisPool, RateLi
 
 ### Adding Limits
 
-Limits can be added at any time as the limit instance variable is thread safe. To add a limit
+Limits can be added at any time as the limit instance variable is thread-safe. To add a limit
 
 ```
 rateLimiter.addLimit(new SlidingLogLImit("limit_name", 5, Duration.ofSeconds(10))).addLimit(new SlidingLogLimit("limit_name2", 30, Duration.ofMinute(1)));
@@ -82,11 +85,11 @@ catch (RateLimiterException e){
 }
 ```
 
-tryRequest returns a boolean indicating whether the requesst should be let through or not. In case of leaky bucket, if the request is allowed then True is returned after waiting for the duration required by the algorithm. 
+tryRequest returns a boolean indicating whether the request should be let through or not. In the case of the leaky bucket, if the request is allowed then True is returned after waiting for the duration required by the algorithm. 
 
-This method throws an exception if limit does not exist, there's a limit type mistach or for leaky bucket if there's more than one limit. This should be handled in the catch block and ideally the request should be allowed if the rateLimiter throws an exception so your service isn't down.
+This method throws an exception if a limit does not exist, there's a limit type mismatch or for leaky bucket if there's more than one limit. This should be handled in the catch block and ideally, the request should be allowed if the rateLimiter throws an exception so your service isn't down.
 
-For a demo Spring API, the code would look like:
+For a demo Spring API, the code would look like this:
 
 ```
 @GetMapping("/")
@@ -97,4 +100,5 @@ public String index(@RequestHeader("identity") String identity) throws RateLimit
     return identity;
 }
 ```
+
 
