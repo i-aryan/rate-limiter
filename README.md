@@ -11,6 +11,42 @@ A Rate limiter is used to regulate the number of requests your API services are 
 
 Every implementation with an exception of Leaky Bucket allows you to add multiple limits which could be used for regulate requests per second/minute/hour/day or any duration that you want to put a limit on. It also allows you to have a cost associated with an API call so a single instance of rate limiter could be used on APIs demanding different rate limits by adjusting the cost.
 
+### Limits
+
+For every implementation we have separate limit type to be used with them as they require different parameters.
+
+```
+1. TokenBucketLimit(String limitId, Integer capacity, Integer refillRate)
+```
+
+- **limitId**: defines the unique name/id associated with every limit.
+
+- **capacity**: Capacity of the limit/bucket.
+
+- **refillRate**: It is the rate at which tokens are refilled in requests per second.
+
+```
+2. FixedWindowLimit(String limitId, Integer capacity, Duration period)
+```
+- **period**: Duration of each bucket/interval after which the counters gets reset.
+
+```
+3. SlidingLogLimit(String limitId, Integer capacity, Duration period)
+```
+- **period**: Here the period is a rolling window interval. Requests are counted between current time and current time minus the period.
+
+```
+4. SlidingWindowLimit(String limitId, Integer capacity, Duration period, Integer lookBackCount)
+```
+- **lookBackCount**: Numbers of buckets to sum over while checking comparing with capacity.
+
+```
+5. LeakyBucketLimit(String limitId, Integer capacity, Integer Rate)
+```
+- **capacity**: Capacity of the queue. Requests arriving after queue is full are discarded.
+
+- **Rate**: Rate at which the requests are processed in per second.
+
 ## Usage
 
 ### Intialisation
