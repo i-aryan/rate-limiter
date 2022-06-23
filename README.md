@@ -18,7 +18,7 @@ This project uses **Jedis**, a Redis client library for Java to make connections
 
 For every implementation, we have separate limit types to be used with them as they require different parameters.
 
-```
+```java
 1. TokenBucketLimit(String limitId, Integer capacity, Integer refillRate)
 ```
 
@@ -28,22 +28,22 @@ For every implementation, we have separate limit types to be used with them as t
 
 - **refillRate**: It is the rate at which tokens are refilled in requests per second.
 
-```
+```java
 2. FixedWindowLimit(String limitId, Integer capacity, Duration period)
 ```
 - **period**: Duration of each bucket/interval after which the counters get reset.
 
-```
+```java
 3. SlidingLogLimit(String limitId, Integer capacity, Duration period)
 ```
 - **period**: Here the period is a rolling window interval. Requests are counted between the current time and current time minus the period.
 
-```
+```java
 4. SlidingWindowLimit(String limitId, Integer capacity, Duration period, Integer lookBackCount)
 ```
 - **lookBackCount**: Numbers of buckets to sum over while checking to compare with capacity.
 
-```
+```java
 5. LeakyBucketLimit(String limitId, Integer capacity, Integer Rate)
 ```
 - **capacity**: Capacity of the queue. Requests arriving after the queue is full are discarded.
@@ -57,7 +57,7 @@ After cloning the repository, you can build it into a JAR file and have it impor
 
 Then you would need to instantiate a JedisPool object with max connections that suits your requirements and pass it as an argument to the create rate limiter method.
 
-```
+```java
 JedisPool jedisPool = new JedisPool(hostName, port);
 RateLimiter rateLimiter = RateLimiterManager.createRateLimiter(jedisPool, RateLimiterType.SLIDING_LOG);
 ```
@@ -66,7 +66,7 @@ RateLimiter rateLimiter = RateLimiterManager.createRateLimiter(jedisPool, RateLi
 
 Limits can be added at any time as the limit instance variable is thread-safe. To add a limit
 
-```
+```java
 rateLimiter.addLimit(new SlidingLogLImit("limit_name", 5, Duration.ofSeconds(10))).addLimit(new SlidingLogLimit("limit_name2", 30, Duration.ofMinute(1)));
 ```
 
@@ -76,7 +76,7 @@ This adds limits of 5 requests per 10 seconds and 30 requests per minute to our 
 
 Inside your method that handles the API call, you will have to add
 
-```
+```java
 try {
     rateLimiter.tryRequest(identity, cost);
 }
@@ -91,7 +91,7 @@ This method throws an exception if a limit does not exist, there's a limit type 
 
 For a demo Spring API, the code would look like this:
 
-```
+```java
 @GetMapping("/")
 public String index(@RequestHeader("identity") String identity) throws RateLimiterException {
     if(!(rateLimiter.tryRequest(identity))){
