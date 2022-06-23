@@ -1,5 +1,5 @@
 # Rate Limiter
-API Rate Limiter library built in Java. Uses Redis for the central datastore.
+API Rate Limiter library built in Java. Uses Redis for the central datastore to make it compatible with distributed systems.
 
 ## Introduction
 A Rate limiter is used to regulate the number of requests your API services are receiving. For example, having rate limits of 100 requests per minute and 1000 requests per hour on some APIs you provide to your service customers. This library offers 5 different algorithmic implementations of the Rate limiter namely
@@ -9,7 +9,7 @@ A Rate limiter is used to regulate the number of requests your API services are 
 - Sliding Window
 - Leaky Bucket
 
-Every implementation with an exception of Leaky Bucket allows you to add multiple limits which could be used for regulating requests per second/minute/hour/day or any duration that you want to put a limit on. It also allows you to have a cost associated with an API call so a single instance of rate limiter could be used on APIs demanding different rate limits by adjusting the cost.
+To understand how these algorithms work you can have a look at this really great [blog](https://www.enjoyalgorithms.com/blog/design-api-rate-limiter). Every implementation with an exception of Leaky Bucket allows you to add multiple limits which could be used for regulating requests per second/minute/hour/day or any duration that you want to put a limit on. It also allows you to have a cost associated with an API call so a single instance of rate limiter could be used on APIs demanding different rate limits by adjusting the cost.
 
 ### Dependencies
 This project uses **Jedis**, a Redis client library for Java to make connections to Redis and issue queries.
