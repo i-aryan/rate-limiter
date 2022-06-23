@@ -82,7 +82,9 @@ catch (RateLimiterException e){
 }
 ```
 
-tryRequest returns a boolean indicating whether the requesst should be let through or not. In case of leaky bucket, if the request is allowed then True is returned after waiting for the duration required by the algorithm. This method throws an exception if limit does not exist, there's a limit type mistach or for leaky bucket if there's more than one limit. This should be handled in the catch block and ideally the request should be allowed if the rateLimiter throws an exception so your service isn't down.
+tryRequest returns a boolean indicating whether the requesst should be let through or not. In case of leaky bucket, if the request is allowed then True is returned after waiting for the duration required by the algorithm. 
+
+This method throws an exception if limit does not exist, there's a limit type mistach or for leaky bucket if there's more than one limit. This should be handled in the catch block and ideally the request should be allowed if the rateLimiter throws an exception so your service isn't down.
 
 For a demo Spring API, the code would look like:
 
