@@ -13,11 +13,14 @@ import java.util.concurrent.Executors;
 
 public abstract class RateLimiter {
 
+    protected final String rateLimiterId;
     protected final JedisPool jedisPool;
+
     protected LuaScript script;
     protected List<Limit> limits = new ArrayList<>();
 
-    public RateLimiter(JedisPool jedisPool){
+    public RateLimiter(String rateLimiterId, JedisPool jedisPool){
+        this.rateLimiterId = rateLimiterId;
         this.jedisPool = jedisPool;
         try(Jedis jedis = jedisPool.getResource()){
             this.script = createLuaScript(jedis);
@@ -42,7 +45,7 @@ public abstract class RateLimiter {
 
 //    public static void main(String[] args) throws RateLimiterException{
 //        JedisPool jedisPool1 = new JedisPool("localhost", 6379);
-//        RateLimiter rateLimiter = RateLimiterManager.createRateLimiter(jedisPool1, RateLimiterType.LEAKY_BUCKET);
+//        RateLimiter rateLimiter = RateLimiterManager.createRateLimiter("ratelimiter1", RateLimiterType.LEAKY_BUCKET, jedisPool1);
 //        rateLimiter.addLimit(new LeakyBucketLimit("test", 5, 1));
 //
 //        ExecutorService executor = Executors.newFixedThreadPool(100);

@@ -19,8 +19,8 @@ import java.util.List;
 public class TokenBucketRateLimiter extends RateLimiter{
 
 
-    public TokenBucketRateLimiter(JedisPool jedisPool){
-        super(jedisPool);
+    public TokenBucketRateLimiter(String rateLimiterId, JedisPool jedisPool){
+        super(rateLimiterId, jedisPool);
     }
     protected LuaScript createLuaScript(Jedis jedis) {
         return new TokenBucketLuaScript(jedis);
@@ -31,8 +31,8 @@ public class TokenBucketRateLimiter extends RateLimiter{
         long timestamp = System.currentTimeMillis();
         try(Jedis jedis = jedisPool.getResource()){
             for(Limit limit: limits) {
-                List<String> keys = Arrays.asList(RateLimiterUtility.getKey(identity, this.toString(), limit.toString()),
-                        RateLimiterUtility.getTimestampKey(identity, this.toString(), limit.toString()));
+                List<String> keys = Arrays.asList(RateLimiterUtility.getKey(identity, this.rateLimiterId, limit.toString()),
+                        RateLimiterUtility.getTimestampKey(identity, this.rateLimiterId, limit.toString()));
                 List<String> args = Arrays.asList(
                         Integer.toString(limit.getCapacity()),
                         Integer.toString(limit.getRate()),

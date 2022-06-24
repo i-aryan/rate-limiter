@@ -14,8 +14,8 @@ import java.util.List;
 
 public class SlidingWidowRateLimiter extends RateLimiter{
 
-    public SlidingWidowRateLimiter(JedisPool jedisPool){
-        super(jedisPool);
+    public SlidingWidowRateLimiter(String rateLimiterId, JedisPool jedisPool){
+        super(rateLimiterId, jedisPool);
     }
 
     protected LuaScript createLuaScript(Jedis jedis) {
@@ -28,7 +28,7 @@ public class SlidingWidowRateLimiter extends RateLimiter{
         try(Jedis jedis = jedisPool.getResource()){
             int index = 0;
             for(Limit limit: this.limits){
-                String key = RateLimiterUtility.getKey(identity, this.toString(), limit.toString());
+                String key = RateLimiterUtility.getKey(identity, this.rateLimiterId, limit.toString());
                 List<String> keys = Arrays.asList(key);
                 List<String> argv = Arrays.asList(limit.getCapacity().toString(), Long.toString(limit.getPeriod().getSeconds()*1000), limit.getLookBackCount().toString(), Long.toString(timestamp), Integer.toString(cost));
                 Object response= jedis.evalsha(this.script.getSha(), keys, argv);

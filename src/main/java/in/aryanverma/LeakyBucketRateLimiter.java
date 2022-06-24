@@ -15,8 +15,8 @@ import java.util.List;
 
 public class LeakyBucketRateLimiter extends RateLimiter{
 
-    public LeakyBucketRateLimiter(JedisPool jedisPool) {
-        super(jedisPool);
+    public LeakyBucketRateLimiter(String rateLimiterId, JedisPool jedisPool) {
+        super(rateLimiterId, jedisPool);
     }
 
     protected LuaScript createLuaScript(Jedis jedis) {
@@ -30,8 +30,8 @@ public class LeakyBucketRateLimiter extends RateLimiter{
         Object response;
         try(Jedis jedis = jedisPool.getResource()){
             Limit limit = this.limits.get(0);
-            String key = RateLimiterUtility.getKey(identity, this.toString(), limit.toString());
-            String timestampKey = RateLimiterUtility.getTimestampKey(identity, this.toString(), limit.toString());
+            String key = RateLimiterUtility.getKey(identity, this.rateLimiterId, limit.toString());
+            String timestampKey = RateLimiterUtility.getTimestampKey(identity, this.rateLimiterId, limit.toString());
             List<String> keys = Arrays.asList(key, timestampKey);
             List<String> argv = Arrays.asList(limit.getCapacity().toString(), limit.getRate().toString(), Long.toString(timestamp), RateLimiterUtility.getKeyWithRandomNumber(timestamp), Integer.toString(cost));
             response = jedis.evalsha(script.getSha(), keys, argv);

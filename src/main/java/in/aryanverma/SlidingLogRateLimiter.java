@@ -18,8 +18,8 @@ import java.util.List;
 public class SlidingLogRateLimiter extends RateLimiter{
 
 
-    public SlidingLogRateLimiter(JedisPool jedisPool){
-        super(jedisPool);
+    public SlidingLogRateLimiter(String rateLimiterId, JedisPool jedisPool){
+        super(rateLimiterId, jedisPool);
     }
 
     protected LuaScript createLuaScript(Jedis jedis) {
@@ -30,7 +30,7 @@ public class SlidingLogRateLimiter extends RateLimiter{
         if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
         long timestamp = System.currentTimeMillis();
         try(Jedis jedis = jedisPool.getResource()){
-            String key = RateLimiterUtility.getKey(identity, this.toString(), "nill");
+            String key = RateLimiterUtility.getKey(identity, this.rateLimiterId, "nill");
             List<String> argv = new ArrayList<>();
             argv.add(Long.toString(timestamp));
             argv.add(RateLimiterUtility.getKeyWithRandomNumber(timestamp));

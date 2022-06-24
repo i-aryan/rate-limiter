@@ -17,8 +17,8 @@ import java.util.List;
 
 public class FixedWindowRateLimiter extends RateLimiter{
 
-    public FixedWindowRateLimiter(JedisPool jedisPool) {
-        super(jedisPool);
+    public FixedWindowRateLimiter(String rateLimiterId, JedisPool jedisPool) {
+        super(rateLimiterId, jedisPool);
     }
 
     protected LuaScript createLuaScript(Jedis jedis) {
@@ -32,7 +32,7 @@ public class FixedWindowRateLimiter extends RateLimiter{
         try(Jedis jedis = this.jedisPool.getResource()){
             for(Limit limit: this.limits){
                 long bucket = (timestamp/limit.getPeriod().getSeconds())*(limit.getPeriod().getSeconds());
-                String key = RateLimiterUtility.getKeyWithTimestamp(identity, this.toString(), limit.toString(), bucket);
+                String key = RateLimiterUtility.getKeyWithTimestamp(identity, this.rateLimiterId, limit.toString(), bucket);
                 List<String> argv = Arrays.asList(limit.getCapacity().toString(), Long.toString(limit.getPeriod().getSeconds()), Integer.toString(cost));
                 Object counter = jedis.evalsha(script.getSha(), Arrays.asList(key), argv);
                 if((Long)counter == 0) {
