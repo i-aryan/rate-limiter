@@ -78,7 +78,9 @@ Inside your method that handles the API call, you will have to add
 
 ```java
 try {
-    rateLimiter.tryRequest(identity, cost);
+    if(!(rateLimiter.tryRequest(identity, cost))){
+        //return error response
+    }
 }
 catch (RateLimiterException e){
     //handle error
