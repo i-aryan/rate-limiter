@@ -59,7 +59,7 @@ Then you would need to instantiate a JedisPool object with max connections that 
 
 ```java
 JedisPool jedisPool = new JedisPool(hostName, port);
-RateLimiter rateLimiter = RateLimiterManager.createRateLimiter(jedisPool, RateLimiterType.SLIDING_LOG);
+RateLimiter rateLimiter = RateLimiterManager.createRateLimiter("rate_limiter1", RateLimiterType.SLIDING_LOG, jedisPool);
 ```
 
 ### Adding Limits
