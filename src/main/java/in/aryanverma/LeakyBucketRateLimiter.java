@@ -1,9 +1,7 @@
 package in.aryanverma;
 
-import in.aryanverma.limit.FixedWindowLimit;
 import in.aryanverma.limit.LeakyBucketLimit;
 import in.aryanverma.limit.Limit;
-import in.aryanverma.luascript.FixedWindowLuaScript;
 import in.aryanverma.luascript.LeakyBucketLuaScript;
 import in.aryanverma.luascript.LuaScript;
 import redis.clients.jedis.Jedis;
@@ -19,6 +17,7 @@ public class LeakyBucketRateLimiter extends RateLimiter{
         super(rateLimiterId, jedisPool);
     }
 
+    // returns leaky bucket lua script instance
     protected LuaScript createLuaScript(Jedis jedis) {
         return new LeakyBucketLuaScript(jedis);
     }
@@ -26,34 +25,31 @@ public class LeakyBucketRateLimiter extends RateLimiter{
     @Override
     public boolean tryRequest(String identity, int cost) throws RateLimiterException {
         if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
-        if(limits.size() > 1) throw new RateLimiterException("Cannot have more than 1 limit in Leaky Bucket Rate limiter");
+        if(limits.size() > 1) throw new RateLimiterException("Cannot have more than 1 limit in Leaky Bucket Rate limiter"); //throw error if more than 1 limit in leaky bucket
 
         long timestamp = System.currentTimeMillis();
         Object response;
-
         try(Jedis jedis = jedisPool.getResource()){
             Limit limit = this.limits.get(0);
-            String key = RateLimiterUtility.getKey(identity, this.rateLimiterId, limit.toString());
-            String timestampKey = RateLimiterUtility.getTimestampKey(identity, this.rateLimiterId, limit.toString());
-            List<String> keys = Arrays.asList(key, timestampKey);
-            List<String> argv = Arrays.asList(limit.getCapacity().toString(), limit.getRate().toString(), Long.toString(timestamp), RateLimiterUtility.getKeyWithRandomNumber(timestamp), Integer.toString(cost));
+            List<String> keys = Arrays.asList(RateLimiterUtility.getKey(identity, this.rateLimiterId, limit.toString())
+                    ,RateLimiterUtility.getTimestampKey(identity, this.rateLimiterId, limit.toString())); //key for sorted set and for lastDispatch time
+            List<String> argv = Arrays.asList(limit.getCapacity().toString(), limit.getRate().toString(), Long.toString(timestamp),
+                    RateLimiterUtility.getKeyWithRandomNumber(timestamp), Integer.toString(cost)); // argv parameter: capacity, rate, current timestamp, sorted set element key, cost
             response = jedis.evalsha(script.getSha(), keys, argv);
         }
 
-        if (((ArrayList<Long>)response).get(0) == 0) return false;
-
+        if (((ArrayList<Long>)response).get(0) == 0) return false; //if not allowed, return false
         try {
-            Thread.sleep(((ArrayList<Long>)response).get(1));
+            Thread.sleep(((ArrayList<Long>)response).get(1)); // otherwise, sleep for required milliseconds returned by the script
         }
         catch (InterruptedException e){
             System.out.println(e);
         }
-
         return true;
     }
     @Override
     protected void checkLimitType(Limit limit) throws RateLimiterException{
-        if(limit instanceof LeakyBucketLimit) return;
+        if(limit instanceof LeakyBucketLimit) return; //throw error if limit type does not match leakybucketlimit
         throw new RateLimiterException("Limit type is not LeakyBucketLimit");
     }
 

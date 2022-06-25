@@ -2,12 +2,12 @@ package in.aryanverma.limit;
 
 import java.time.Duration;
 
-public class Limit {
-    private Integer capacity;
-    private Integer Rate;
-    private Integer lookBackCount;
-    private Duration period;
-    private String limitId;
+public abstract class Limit {
+    private Integer capacity; // capacity for the limit
+    private Integer Rate; // refill rate or dispatch rate
+    private Integer lookBackCount; // look back count of buckets used for sliding window
+    private Duration period; // rate limiting interval duration
+    private String limitId; // limit id to uniquely identify limits, used in redis key
 
     public Limit(String limitId, Integer capacity, Duration period, Integer Rate, Integer lookBackCount){
         this.limitId = limitId;

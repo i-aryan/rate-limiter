@@ -11,26 +11,26 @@ public class TokenBucketLuaScript extends LuaScript{
             "local timestamp = tonumber(ARGV[3]); " +
             "local cost = tonumber(ARGV[4]); " +
             " " +
-            "local tokens = tonumber(redis.call('get', tokensKey)); " +
-            "if tokens == nil then " +
+            "local tokens = tonumber(redis.call('get', tokensKey)); " + // getting current number of tokens
+            "if tokens == nil then " + // if it returns nil, then set tokens to capacity (key expired after capacity reached or new user)
             "tokens = capacity; " +
             "end " +
             " " +
-            "local prevTimestamp = tonumber(redis.call('get', timestampKey)); " +
+            "local prevTimestamp = tonumber(redis.call('get', timestampKey)); " + // getting the last timestamp tokens were fetched
             "if prevTimestamp == nil then " +
             "prevTimestamp = 0; " +
             "end " +
             " " +
-            "tokens = math.min(capacity, tokens + math.max(timestamp - prevTimestamp, 0)*rate/1000); " +
+            "tokens = math.min(capacity, tokens + math.max(timestamp - prevTimestamp, 0)*rate/1000); " + // using the difference between current and last timestamp to calculate tokens to refill
             " " +
             "local allow = 0; " +
             "if cost <= tokens then " +
-            "tokens = tokens - cost; " +
+            "tokens = tokens - cost; " + // if tokens can be consumed, reduce them
             "allow = 1; " +
             "end " +
             " " +
-            "redis.call('setex', tokensKey, math.ceil(2*capacity/rate), tokens); " +
-            "redis.call('setex', timestampKey, math.ceil(2*capacity/rate), timestamp); " +
+            "redis.call('setex', tokensKey, math.ceil(2*capacity/rate), tokens); " + // updating tokens bucket and its expiry time
+            "redis.call('setex', timestampKey, math.ceil(2*capacity/rate), timestamp); " + // updating last timestamp key and the expiry time
             " " +
             "return allow;";
 
