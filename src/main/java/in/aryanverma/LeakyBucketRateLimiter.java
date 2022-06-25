@@ -22,12 +22,15 @@ public class LeakyBucketRateLimiter extends RateLimiter{
     protected LuaScript createLuaScript(Jedis jedis) {
         return new LeakyBucketLuaScript(jedis);
     }
+
     @Override
     public boolean tryRequest(String identity, int cost) throws RateLimiterException {
         if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
         if(limits.size() > 1) throw new RateLimiterException("Cannot have more than 1 limit in Leaky Bucket Rate limiter");
+
         long timestamp = System.currentTimeMillis();
         Object response;
+
         try(Jedis jedis = jedisPool.getResource()){
             Limit limit = this.limits.get(0);
             String key = RateLimiterUtility.getKey(identity, this.rateLimiterId, limit.toString());
@@ -37,19 +40,15 @@ public class LeakyBucketRateLimiter extends RateLimiter{
             response = jedis.evalsha(script.getSha(), keys, argv);
         }
 
-        if (((ArrayList<Long>)response).get(0) == 0) {
-//            System.out.println(timestamp/1000 + ", false");
-            return false;
-        }
+        if (((ArrayList<Long>)response).get(0) == 0) return false;
+
         try {
             Thread.sleep(((ArrayList<Long>)response).get(1));
         }
         catch (InterruptedException e){
             System.out.println(e);
         }
-//        while(((ArrayList<Long>)response).get(1)>System.currentTimeMillis());
 
-//        System.out.println(identity + ", " + timestamp + ", true, " + System.currentTimeMillis() + ", wait:" + ((ArrayList<Long>)response).get(1));
         return true;
     }
     @Override

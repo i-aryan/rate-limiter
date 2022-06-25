@@ -43,39 +43,5 @@ public abstract class RateLimiter {
     protected abstract void checkLimitType(Limit limit) throws RateLimiterException;
     protected abstract LuaScript createLuaScript(Jedis jedis);
 
-//    public static void main(String[] args) throws RateLimiterException{
-//        JedisPool jedisPool1 = new JedisPool("localhost", 6379);
-//        RateLimiter rateLimiter = RateLimiterManager.createRateLimiter("ratelimiter1", RateLimiterType.LEAKY_BUCKET, jedisPool1);
-//        rateLimiter.addLimit(new LeakyBucketLimit("test", 5, 1));
-//
-//        ExecutorService executor = Executors.newFixedThreadPool(100);
-//        Random random = new Random();
-//        for(int i=0; i<1000; i++){
-//            PretendRequest request = new PretendRequest(rateLimiter,(1 + random.nextInt(5) )*1000);
-//            executor.execute(request);
-//        }
-//        executor.shutdown();
-//    }
-}
 
-//class PretendRequest implements Runnable {
-//    private RateLimiter rateLimiter;
-//    private int sleepTime;
-//    public PretendRequest(RateLimiter rateLimiter, int sleepTime){
-//        this.rateLimiter = rateLimiter;
-//        this.sleepTime = sleepTime;
-//    }
-//
-//    @Override
-//    public void run() {
-//        try{
-//            Thread.sleep(this.sleepTime);
-//        }catch (InterruptedException e){}
-//        try {
-//            rateLimiter.tryRequest("Thread.currentThread().getName()", 1);
-//        }
-//        catch (RateLimiterException e){
-//            System.out.println(e);
-//        }
-//    }
-//}
+}

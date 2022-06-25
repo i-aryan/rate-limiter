@@ -25,6 +25,7 @@ public class SlidingLogRateLimiter extends RateLimiter{
     protected LuaScript createLuaScript(Jedis jedis) {
         return new SlidingLogLuaScript(jedis);
     }
+
     @Override
     public boolean tryRequest(String identity, int cost) throws RateLimiterException{
         if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
@@ -40,11 +41,8 @@ public class SlidingLogRateLimiter extends RateLimiter{
                 argv.add(Long.toString(limit.getPeriod().getSeconds()));
             }
             Object response = jedis.evalsha(this.script.getSha(), Arrays.asList(key), argv);
-            if((Long)response==0) {
-//                System.out.println(timestamp/1000 + ",false " + timestamp);
-                return false;
-            }
-//            System.out.println(timestamp/1000 + ",true " + timestamp);
+            if((Long)response==0) return false;
+
         }
         return true;
     }

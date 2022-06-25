@@ -22,9 +22,11 @@ public class TokenBucketRateLimiter extends RateLimiter{
     public TokenBucketRateLimiter(String rateLimiterId, JedisPool jedisPool){
         super(rateLimiterId, jedisPool);
     }
+
     protected LuaScript createLuaScript(Jedis jedis) {
         return new TokenBucketLuaScript(jedis);
     }
+
     @Override
     public boolean tryRequest(String identity, int cost) throws RateLimiterException{
         if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
@@ -40,13 +42,9 @@ public class TokenBucketRateLimiter extends RateLimiter{
                         Integer.toString(cost)
                 );
                 Object response = jedis.evalsha(script.getSha(), keys, args);
-                if((Long)response == 0) {
-//                    System.out.println(timestamp/1000 + ", false");
-                    return false;
-                }
+                if((Long)response == 0) return false;
             }
         }
-//        System.out.println(timestamp/1000 + ", true");
         return true;
     }
 
