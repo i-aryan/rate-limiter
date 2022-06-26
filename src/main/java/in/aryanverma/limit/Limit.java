@@ -17,6 +17,10 @@ public abstract class Limit {
         this.lookBackCount = lookBackCount;
     }
 
+    public String getLimitId() {
+        return limitId;
+    }
+
     public Integer getCapacity() {
         return capacity;
     }

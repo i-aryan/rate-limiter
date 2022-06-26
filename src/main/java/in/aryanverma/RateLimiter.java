@@ -49,10 +49,14 @@ public abstract class RateLimiter {
      * To add a limit to the rate limiter. Thread safe. Do not add more than 1 limit if leaky bucket.
      * @param limit Limit subclass that matches the rate limiter implementation.
      * @return returns instance of the rate limiter. Could be used for chaining.
-     * @throws RateLimiterException
+     * @throws RateLimiterException if there's limit type mismatch or limitID already exists.
      */
-    public RateLimiter addLimit(Limit limit) throws RateLimiterException {
+    public synchronized RateLimiter addLimit(Limit limit) throws RateLimiterException {
         checkLimitType(limit);
+        for(Limit currLimit: this.limits){
+            //check if limit with given Id already exists
+            if(currLimit.getLimitId() == limit.getLimitId()) throw new RateLimiterException("Limit with given ID already exists.");
+        }
         limits.add(limit);
         return this;
     }
@@ -60,7 +64,7 @@ public abstract class RateLimiter {
     /**
      * Used to validate if rateLimiter subclass matches its corresponding limit subclass.
      * @param limit Limit subclass object to be checked against rateLimiter subclass.
-     * @throws RateLimiterException
+     * @throws RateLimiterException if there's a limit type mismatch against rateLimiter class
      */
     protected abstract void checkLimitType(Limit limit) throws RateLimiterException;
 
