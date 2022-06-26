@@ -44,7 +44,7 @@ For every implementation, we have separate limit types to be used with them as t
 - **lookBackCount**: Numbers of buckets to sum over while checking to compare with capacity.
 
 ```java
-5. LeakyBucketLimit(String limitId, Integer capacity, Integer Rate)
+5. LeakyBucketLimit(String limitId, Integer capacity, Integer rate)
 ```
 - **capacity**: Capacity of the queue. Requests arriving after the queue is full are discarded.
 
@@ -58,8 +58,9 @@ After cloning the repository, you can build it into a JAR file and have it impor
 Then you would need to instantiate a JedisPool object with max connections that suits your requirements and pass it as an argument to the create rate limiter method.
 
 ```java
+RateLimiterManager manager = new RateLimiterManager();
 JedisPool jedisPool = new JedisPool(hostName, port);
-RateLimiter rateLimiter = RateLimiterManager.createRateLimiter("rate_limiter1", RateLimiterType.SLIDING_LOG, jedisPool);
+RateLimiter rateLimiter = manager.createRateLimiter("rate_limiter", RateLimiterType.SLIDING_LOG, jedisPool);
 ```
 
 ### Adding Limits
@@ -96,6 +97,7 @@ For a demo Spring API, the code would look like this:
 ```java
 @GetMapping("/")
 public String index(@RequestHeader("identity") String identity) throws RateLimiterException {
+    RateLimiter rateLimiter = manager.getRateLimiter("rate_limiter");
     if(!(rateLimiter.tryRequest(identity))){
         throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Calm down.");
     }

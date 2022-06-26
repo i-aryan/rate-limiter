@@ -3,15 +3,15 @@ package in.aryanverma;
 import in.aryanverma.limit.*;
 import in.aryanverma.luascript.LuaScript;
 import redis.clients.jedis.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class RateLimiter {
 
-    protected final String rateLimiterId;
+    protected final String rateLimiterId; // used to uniquely identify a rateLimiter within a RateLimiterManager. Used in redis key name.
     protected final JedisPool jedisPool;
-    protected LuaScript script;
-    protected List<Limit> limits = new ArrayList<>();
+    protected LuaScript script; // holds LuaScript instance used to get SHA of loaded script
+    protected List<Limit> limits = new CopyOnWriteArrayList<>(); // Thread-safe list so new limits can be added at any time
 
     /**
      *
@@ -46,16 +46,14 @@ public abstract class RateLimiter {
     }
 
     /**
-     * To add a limit to the rate limiter. Do not add more than 1 limit if leaky bucket.
+     * To add a limit to the rate limiter. Thread safe. Do not add more than 1 limit if leaky bucket.
      * @param limit Limit subclass that matches the rate limiter implementation.
      * @return returns instance of the rate limiter. Could be used for chaining.
      * @throws RateLimiterException
      */
     public RateLimiter addLimit(Limit limit) throws RateLimiterException {
         checkLimitType(limit);
-        synchronized (this.limits) {
-            limits.add(limit);
-        }
+        limits.add(limit);
         return this;
     }
 
