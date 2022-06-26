@@ -65,7 +65,7 @@ RateLimiter rateLimiter = manager.createRateLimiter("rate_limiter", RateLimiterT
 
 ### Adding Limits
 
-Limits can be added at any time as the limit instance variable is thread-safe. To add a limit
+Limits can be added at any time as we use CopyOnWriteArrayList to store limits array. To add a limit
 
 ```java
 rateLimiter.addLimit(new SlidingLogLImit("limit_name", 5, Duration.ofSeconds(10))).addLimit(new SlidingLogLimit("limit_name2", 30, Duration.ofMinute(1)));
