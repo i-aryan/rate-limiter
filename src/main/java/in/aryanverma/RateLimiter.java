@@ -66,6 +66,20 @@ public abstract class RateLimiter {
     }
 
     /**
+     * Deletes all the limits.
+     */
+    public void removeAllLimits(){
+        this.limits.clear();
+    }
+
+    /**
+     * @return Returns the limits array list. Actual type is CopyOnWriteArrayList.
+     */
+    public List<Limit> getLimits(){
+        return this.limits;
+    }
+
+    /**
      * Used to validate if rateLimiter subclass matches its corresponding limit subclass.
      * @param limit Limit subclass object to be checked against rateLimiter subclass.
      * @throws RateLimiterException if there's a limit type mismatch against rateLimiter class
