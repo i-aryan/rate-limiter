@@ -5,8 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1b47b8b7-344d-425e-aca3-7fce8230502b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/exception/DuplicateLimitIdException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/exception/DuplicateRateLimiterIdException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/exception/LimitMismatchException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/exception/LimitsEmptyException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/exception/MultipleLimitLeakyBucketException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/FixedWindowRateLimiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/FixedWindowRateLimiter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/LeakyBucketRateLimiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/LeakyBucketRateLimiter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/RateLimiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/RateLimiter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/limit/Limit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/limit/Limit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/RateLimiterException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/exception/RateLimiterException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/RateLimiterManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/RateLimiterManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/SlidingLogRateLimiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/SlidingLogRateLimiter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/SlidingWidowRateLimiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/SlidingWidowRateLimiter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/in/aryanverma/TokenBucketRateLimiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/in/aryanverma/TokenBucketRateLimiter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

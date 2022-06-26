@@ -1,5 +1,7 @@
 package in.aryanverma;
 
+import in.aryanverma.exception.LimitMismatchException;
+import in.aryanverma.exception.LimitsEmptyException;
 import in.aryanverma.limit.Limit;
 import in.aryanverma.limit.SlidingWindowLimit;
 import in.aryanverma.luascript.LuaScript;
@@ -20,8 +22,8 @@ public class SlidingWidowRateLimiter extends RateLimiter{
     }
 
     @Override
-    public boolean tryRequest(String identity, int cost) throws RateLimiterException{
-        if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
+    public boolean tryRequest(String identity, int cost) throws LimitsEmptyException {
+        if(limits.isEmpty()) throw new LimitsEmptyException("Limit is empty");
         long timestamp = System.currentTimeMillis();
         try(Jedis jedis = jedisPool.getResource()){
             for(Limit limit: this.limits){
@@ -38,9 +40,9 @@ public class SlidingWidowRateLimiter extends RateLimiter{
     }
 
     @Override
-    protected void checkLimitType(Limit limit) throws RateLimiterException{
+    protected void checkLimitType(Limit limit) throws LimitMismatchException{
         if(limit instanceof SlidingWindowLimit) return; // throw error if limit type does not match sliding window limit
-        throw new RateLimiterException("Limit type is not SlidingWindowLimit");
+        throw new LimitMismatchException("Limit type is not SlidingWindowLimit");
     }
     @Override
     public String toString() {

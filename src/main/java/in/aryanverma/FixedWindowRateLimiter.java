@@ -1,5 +1,7 @@
 package in.aryanverma;
 
+import in.aryanverma.exception.LimitMismatchException;
+import in.aryanverma.exception.LimitsEmptyException;
 import in.aryanverma.limit.FixedWindowLimit;
 import in.aryanverma.limit.Limit;
 import in.aryanverma.luascript.FixedWindowLuaScript;
@@ -21,8 +23,8 @@ public class FixedWindowRateLimiter extends RateLimiter{
     }
 
     @Override
-    public boolean tryRequest(String identity, int cost) throws RateLimiterException {
-        if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
+    public boolean tryRequest(String identity, int cost) throws LimitsEmptyException {
+        if(limits.isEmpty()) throw new LimitsEmptyException("Limit is empty");
         long timestamp = System.currentTimeMillis()/1000; // timestamp in seconds because granularity for fixed window is in seconds.
         try(Jedis jedis = this.jedisPool.getResource()){ // getting a connection from the jedis pool
             for(Limit limit: this.limits){
@@ -37,9 +39,9 @@ public class FixedWindowRateLimiter extends RateLimiter{
     }
 
     @Override
-    protected void checkLimitType(Limit limit) throws RateLimiterException{
+    protected void checkLimitType(Limit limit) throws LimitMismatchException{
         if(limit instanceof FixedWindowLimit) return; // if limit type is not FixedWindowLimit throw an error
-        throw new RateLimiterException("Limit type is not FixedWindowLimit");
+        throw new LimitMismatchException("Limit type is not FixedWindowLimit");
     }
 
     @Override

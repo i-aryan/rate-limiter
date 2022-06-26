@@ -1,5 +1,8 @@
 package in.aryanverma;
 
+import in.aryanverma.exception.LimitMismatchException;
+import in.aryanverma.exception.LimitsEmptyException;
+import in.aryanverma.exception.MultipleLimitLeakyBucketException;
 import in.aryanverma.limit.LeakyBucketLimit;
 import in.aryanverma.limit.Limit;
 import in.aryanverma.luascript.LeakyBucketLuaScript;
@@ -23,9 +26,9 @@ public class LeakyBucketRateLimiter extends RateLimiter{
     }
 
     @Override
-    public boolean tryRequest(String identity, int cost) throws RateLimiterException {
-        if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
-        if(limits.size() > 1) throw new RateLimiterException("Cannot have more than 1 limit in Leaky Bucket Rate limiter"); //throw error if more than 1 limit in leaky bucket
+    public boolean tryRequest(String identity, int cost) throws LimitsEmptyException, MultipleLimitLeakyBucketException {
+        if(limits.isEmpty()) throw new LimitsEmptyException("Limit is empty");
+        if(limits.size() > 1) throw new MultipleLimitLeakyBucketException("Cannot have more than 1 limit in Leaky Bucket Rate limiter"); //throw error if more than 1 limit in leaky bucket
 
         long timestamp = System.currentTimeMillis();
         Object response;
@@ -48,9 +51,9 @@ public class LeakyBucketRateLimiter extends RateLimiter{
         return true;
     }
     @Override
-    protected void checkLimitType(Limit limit) throws RateLimiterException{
+    protected void checkLimitType(Limit limit) throws LimitMismatchException{
         if(limit instanceof LeakyBucketLimit) return; //throw error if limit type does not match leakybucketlimit
-        throw new RateLimiterException("Limit type is not LeakyBucketLimit");
+        throw new LimitMismatchException("Limit type is not LeakyBucketLimit");
     }
 
     @Override

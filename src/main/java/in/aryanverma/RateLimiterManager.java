@@ -1,5 +1,7 @@
 package in.aryanverma;
 
+import in.aryanverma.exception.DuplicateRateLimiterIdException;
+import in.aryanverma.exception.RateLimiterException;
 import redis.clients.jedis.JedisPool;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,8 +18,8 @@ public class RateLimiterManager {
      * @return returns the rateLimiter instance of given type.
      * @throws RateLimiterException if rateLimiter with given Id already exists.
      */
-    public RateLimiter createRateLimiter(String rateLimiterId, RateLimiterType type, JedisPool jedisPool) throws RateLimiterException{
-        if(rateLimiters.get(rateLimiterId) != null) throw new RateLimiterException("Rate Limiter with given Id already exists");
+    public RateLimiter createRateLimiter(String rateLimiterId, RateLimiterType type, JedisPool jedisPool) throws DuplicateRateLimiterIdException{
+        if(rateLimiters.get(rateLimiterId) != null) throw new DuplicateRateLimiterIdException("Rate Limiter with given Id already exists");
 
         RateLimiter rateLimiter;
         if(type == RateLimiterType.FIXED_WINDOW) rateLimiter = new FixedWindowRateLimiter(rateLimiterId, jedisPool);

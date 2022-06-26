@@ -1,5 +1,7 @@
 package in.aryanverma;
 
+import in.aryanverma.exception.LimitMismatchException;
+import in.aryanverma.exception.LimitsEmptyException;
 import in.aryanverma.limit.Limit;
 import in.aryanverma.limit.SlidingLogLimit;
 import in.aryanverma.luascript.LuaScript;
@@ -23,8 +25,8 @@ public class SlidingLogRateLimiter extends RateLimiter{
     }
 
     @Override
-    public boolean tryRequest(String identity, int cost) throws RateLimiterException{
-        if(limits.isEmpty()) throw new RateLimiterException("Limit is empty");
+    public boolean tryRequest(String identity, int cost) throws LimitsEmptyException {
+        if(limits.isEmpty()) throw new LimitsEmptyException("Limit is empty");
         long timestamp = System.currentTimeMillis();
         try(Jedis jedis = jedisPool.getResource()){ // gets a jedis connection from the pool
             List<String> keys = Arrays.asList(RateLimiterUtility.getKey(identity, this.rateLimiterId, "nill")); // keys parameter consists of key name
@@ -43,9 +45,9 @@ public class SlidingLogRateLimiter extends RateLimiter{
     }
 
     @Override
-    protected void checkLimitType(Limit limit) throws RateLimiterException{
+    protected void checkLimitType(Limit limit) throws LimitMismatchException{
         if(limit instanceof SlidingLogLimit) return; // throw error if limit type does not match
-        throw new RateLimiterException("Limit type is not SlidingLogLimit");
+        throw new LimitMismatchException("Limit type is not SlidingLogLimit");
     }
 
     @Override

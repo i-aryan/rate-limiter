@@ -1,5 +1,8 @@
 package in.aryanverma;
 
+import in.aryanverma.exception.DuplicateLimitIdException;
+import in.aryanverma.exception.LimitMismatchException;
+import in.aryanverma.exception.RateLimiterException;
 import in.aryanverma.limit.*;
 import in.aryanverma.luascript.LuaScript;
 import redis.clients.jedis.*;
@@ -47,15 +50,16 @@ public abstract class RateLimiter {
 
     /**
      * To add a limit to the rate limiter. Thread safe. Do not add more than 1 limit if leaky bucket.
-     * @param limit Limit subclass that matches the rate limiter implementation.
+     * @param limit limit Limit subclass that matches the rate limiter implementation.
      * @return returns instance of the rate limiter. Could be used for chaining.
-     * @throws RateLimiterException if there's limit type mismatch or limitID already exists.
+     * @throws DuplicateLimitIdException if limit with given Id already exists.
+     * @throws LimitMismatchException if there's limit class is not compatible with rateLimiter class.
      */
-    public synchronized RateLimiter addLimit(Limit limit) throws RateLimiterException {
+    public synchronized RateLimiter addLimit(Limit limit) throws DuplicateLimitIdException, LimitMismatchException {
         checkLimitType(limit);
         for(Limit currLimit: this.limits){
             //check if limit with given Id already exists
-            if(currLimit.getLimitId() == limit.getLimitId()) throw new RateLimiterException("Limit with given ID already exists.");
+            if(currLimit.getLimitId() == limit.getLimitId()) throw new DuplicateLimitIdException("Limit with given ID already exists.");
         }
         limits.add(limit);
         return this;
@@ -66,7 +70,7 @@ public abstract class RateLimiter {
      * @param limit Limit subclass object to be checked against rateLimiter subclass.
      * @throws RateLimiterException if there's a limit type mismatch against rateLimiter class
      */
-    protected abstract void checkLimitType(Limit limit) throws RateLimiterException;
+    protected abstract void checkLimitType(Limit limit) throws LimitMismatchException;
 
     /**
      * Used to create LuaScript subclass corresponding to RateLimiter class type and load it into Redis server.
