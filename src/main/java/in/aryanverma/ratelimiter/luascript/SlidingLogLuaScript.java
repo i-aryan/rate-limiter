@@ -1,4 +1,4 @@
-package in.aryanverma.luascript;
+package in.aryanverma.ratelimiter.luascript;
 
 import redis.clients.jedis.Jedis;
 

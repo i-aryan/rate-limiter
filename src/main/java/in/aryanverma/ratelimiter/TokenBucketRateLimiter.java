@@ -1,11 +1,11 @@
-package in.aryanverma;
+package in.aryanverma.ratelimiter;
 
-import in.aryanverma.exception.LimitMismatchException;
-import in.aryanverma.exception.LimitsEmptyException;
-import in.aryanverma.limit.Limit;
-import in.aryanverma.limit.TokenBucketLimit;
-import in.aryanverma.luascript.LuaScript;
-import in.aryanverma.luascript.TokenBucketLuaScript;
+import in.aryanverma.ratelimiter.exception.LimitMismatchException;
+import in.aryanverma.ratelimiter.exception.LimitsEmptyException;
+import in.aryanverma.ratelimiter.limit.Limit;
+import in.aryanverma.ratelimiter.limit.TokenBucketLimit;
+import in.aryanverma.ratelimiter.luascript.LuaScript;
+import in.aryanverma.ratelimiter.luascript.TokenBucketLuaScript;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import java.util.Arrays;

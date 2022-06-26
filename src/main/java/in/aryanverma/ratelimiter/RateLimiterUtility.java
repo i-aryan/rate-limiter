@@ -1,4 +1,4 @@
-package in.aryanverma;
+package in.aryanverma.ratelimiter;
 
 import java.util.concurrent.ThreadLocalRandom;
 

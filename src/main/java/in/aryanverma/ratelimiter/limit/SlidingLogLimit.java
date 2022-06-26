@@ -1,4 +1,4 @@
-package in.aryanverma.limit;
+package in.aryanverma.ratelimiter.limit;
 
 import java.time.Duration;
 

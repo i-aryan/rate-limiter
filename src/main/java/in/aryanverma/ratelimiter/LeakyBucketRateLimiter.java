@@ -1,12 +1,12 @@
-package in.aryanverma;
+package in.aryanverma.ratelimiter;
 
-import in.aryanverma.exception.LimitMismatchException;
-import in.aryanverma.exception.LimitsEmptyException;
-import in.aryanverma.exception.MultipleLimitLeakyBucketException;
-import in.aryanverma.limit.LeakyBucketLimit;
-import in.aryanverma.limit.Limit;
-import in.aryanverma.luascript.LeakyBucketLuaScript;
-import in.aryanverma.luascript.LuaScript;
+import in.aryanverma.ratelimiter.exception.LimitMismatchException;
+import in.aryanverma.ratelimiter.exception.LimitsEmptyException;
+import in.aryanverma.ratelimiter.exception.MultipleLimitLeakyBucketException;
+import in.aryanverma.ratelimiter.limit.LeakyBucketLimit;
+import in.aryanverma.ratelimiter.limit.Limit;
+import in.aryanverma.ratelimiter.luascript.LeakyBucketLuaScript;
+import in.aryanverma.ratelimiter.luascript.LuaScript;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 

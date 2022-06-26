@@ -1,4 +1,4 @@
-package in.aryanverma.exception;
+package in.aryanverma.ratelimiter.exception;
 
 /**
  * Is thrown if more than 1 limit is there in LeakyBucket RateLimiter

@@ -1,4 +1,4 @@
-package in.aryanverma.exception;
+package in.aryanverma.ratelimiter.exception;
 
 /**
  * Is thrown if Limit type and RateLimiter class type are not compatible.

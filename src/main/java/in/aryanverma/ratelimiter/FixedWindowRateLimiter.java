@@ -1,11 +1,11 @@
-package in.aryanverma;
+package in.aryanverma.ratelimiter;
 
-import in.aryanverma.exception.LimitMismatchException;
-import in.aryanverma.exception.LimitsEmptyException;
-import in.aryanverma.limit.FixedWindowLimit;
-import in.aryanverma.limit.Limit;
-import in.aryanverma.luascript.FixedWindowLuaScript;
-import in.aryanverma.luascript.LuaScript;
+import in.aryanverma.ratelimiter.exception.LimitMismatchException;
+import in.aryanverma.ratelimiter.exception.LimitsEmptyException;
+import in.aryanverma.ratelimiter.limit.FixedWindowLimit;
+import in.aryanverma.ratelimiter.limit.Limit;
+import in.aryanverma.ratelimiter.luascript.FixedWindowLuaScript;
+import in.aryanverma.ratelimiter.luascript.LuaScript;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import java.util.Arrays;

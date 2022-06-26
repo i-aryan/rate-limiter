@@ -1,7 +1,7 @@
-package in.aryanverma;
+package in.aryanverma.ratelimiter;
 
-import in.aryanverma.exception.DuplicateRateLimiterIdException;
-import in.aryanverma.exception.RateLimiterException;
+import in.aryanverma.ratelimiter.exception.DuplicateRateLimiterIdException;
+import in.aryanverma.ratelimiter.exception.RateLimiterException;
 import redis.clients.jedis.JedisPool;
 
 import java.util.concurrent.ConcurrentHashMap;

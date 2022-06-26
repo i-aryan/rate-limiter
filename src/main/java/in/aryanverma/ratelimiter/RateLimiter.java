@@ -1,10 +1,10 @@
-package in.aryanverma;
+package in.aryanverma.ratelimiter;
 
-import in.aryanverma.exception.DuplicateLimitIdException;
-import in.aryanverma.exception.LimitMismatchException;
-import in.aryanverma.exception.RateLimiterException;
-import in.aryanverma.limit.*;
-import in.aryanverma.luascript.LuaScript;
+import in.aryanverma.ratelimiter.exception.DuplicateLimitIdException;
+import in.aryanverma.ratelimiter.exception.LimitMismatchException;
+import in.aryanverma.ratelimiter.exception.RateLimiterException;
+import in.aryanverma.ratelimiter.limit.Limit;
+import in.aryanverma.ratelimiter.luascript.LuaScript;
 import redis.clients.jedis.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
