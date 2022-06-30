@@ -17,6 +17,6 @@ public class RateLimiterUtility {
     }
 
     public static String getKeyWithRandomNumber(long timestamp){
-        return timestamp + ":" + ThreadLocalRandom.current().nextInt(100);
+        return timestamp + ":" + ThreadLocalRandom.current().nextInt(1000);
     }
 }
