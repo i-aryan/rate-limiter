@@ -5,7 +5,7 @@ import redis.clients.jedis.Jedis;
 public class SlidingWindowLuaScript extends LuaScript {
     private String script = "local keyName = KEYS[1]; " +
             "local capacity = tonumber(ARGV[1]); " +
-            "local period = tonumber(ARGV[2]); " +
+            "local period = tonumber(ARGV[2]); " + // in milliseconds
             "local lookbackCount = tonumber(ARGV[3]); " +
             "local timestamp = tonumber(ARGV[4]); " +
             "local cost = tonumber(ARGV[5]); " +
@@ -25,7 +25,7 @@ public class SlidingWindowLuaScript extends LuaScript {
             "end " +
             "local extraBucket = tonumber(redis.call('hget', keyName, tostring(bucket-lookbackCount*period))); " + // getting the (lookback count + 1)th bucket
             "if extraBucket ~=nil then " +
-            "sum = sum-math.floor(extraBucket/period)*(timestamp - bucket); " + // if the bucket is there, then deleting extra requests in sum by assuming a constant rate of requests
+            "sum = sum-math.ceil((extraBucket/period)*(timestamp - bucket)); " + // if the bucket is there, then deleting extra requests in sum by assuming a constant rate of requests
             "end " +
             "if sum + cost>capacity then " + // checking if adding request exceeds capacity
             "return 0; " +
