@@ -59,7 +59,7 @@ public abstract class RateLimiter {
         checkLimitType(limit);
         for(Limit currLimit: this.limits){
             //check if limit with given Id already exists
-            if(currLimit.getLimitId() == limit.getLimitId()) throw new DuplicateLimitIdException("Limit with given ID already exists.");
+            if(currLimit.getLimitId() == limit.getLimitId()) throw new DuplicateLimitIdException("Limit with given ID already exists. LimitId: "+limit.getLimitId());
         }
         limits.add(limit);
         return this;

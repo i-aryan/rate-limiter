@@ -9,7 +9,7 @@ public abstract class Limit {
     private Duration period; // rate limiting interval duration
     private String limitId; // limit id to uniquely identify limits, used in redis key
 
-    public Limit(String limitId, Integer capacity, Duration period, Integer Rate, Integer lookBackCount){
+    public Limit(String limitId, Integer capacity, Duration period, Integer rate, Integer lookBackCount){
         this.limitId = limitId;
         this.capacity = capacity;
         this.period = period;

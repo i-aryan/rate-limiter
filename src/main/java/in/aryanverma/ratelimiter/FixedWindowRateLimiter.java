@@ -30,9 +30,11 @@ public class FixedWindowRateLimiter extends RateLimiter{
             for(Limit limit: this.limits){
                 long bucket = (timestamp/limit.getPeriod().getSeconds())*(limit.getPeriod().getSeconds()); // bucket (in seconds) the current time falls into
                 String key = RateLimiterUtility.getKeyWithTimestamp(identity, this.rateLimiterId, limit.toString(), bucket); // key parameter for lua script in redis
+
                 List<String> argv = Arrays.asList(limit.getCapacity().toString(), Long.toString(limit.getPeriod().getSeconds()), Integer.toString(cost)); // argv parameter for lua script in redis
                 Object allow = jedis.evalsha(script.getSha(), Arrays.asList(key), argv); // using evalsha to run lua script. storing result in counter.
                 if((Long)allow == 0) return false;
+
             }
         }
         return true;
